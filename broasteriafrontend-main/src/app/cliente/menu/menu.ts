@@ -31,8 +31,6 @@ export class Menu implements OnInit, OnDestroy {
     15: 3, 16: 3, 17: 3, 18: 3, 19: 6.5, 20: 6.5
   };
 
-  private intervaloRefresco: any;
-
   constructor(
     private router: Router,
     private clienteService: ClienteService,
@@ -41,11 +39,9 @@ export class Menu implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchProductsData();
-    this.intervaloRefresco = setInterval(() => this.fetchProductsData(), 3000);
   }
 
   ngOnDestroy(): void {
-    if (this.intervaloRefresco) clearInterval(this.intervaloRefresco);
   }
 
   /* --- NUEVO --- */

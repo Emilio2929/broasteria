@@ -16,14 +16,11 @@ export class Inventario implements OnInit, OnDestroy{
   productosPorCategoria: { [key: string]: any[] } = {};
   categoriaSeleccionada: number | null = null;
 
-  private intervaloActualizacion: any;
-  //modificaaa
   mostrarModal = false;
   modalTitulo = '';
   modalMensaje = '';
   modalTipo: 'success' | 'error' | 'confirm' = 'success';
   modalAccion: 'cerrarSesion' | null = null;
-  //
 
   constructor(
     private router: Router,
@@ -34,14 +31,8 @@ export class Inventario implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     this.cargarInventario();
-    this.intervaloActualizacion = setInterval(() => {
-      this.actualizarDatosSilenciosamente();
-    }, 3000);
   }
   ngOnDestroy(): void {
-    if (this.intervaloActualizacion) {
-      clearInterval(this.intervaloActualizacion);
-    }
   }
   cargarTablaInicial() {
     const tabla = document.getElementById('tablaInventario');
