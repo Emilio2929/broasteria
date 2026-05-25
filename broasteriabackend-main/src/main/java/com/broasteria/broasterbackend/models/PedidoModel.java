@@ -46,10 +46,10 @@ public class PedidoModel {
     @JsonIgnoreProperties("pedido")
     private List<PagoModel> pagos;
 
-    @Column
+    @Column(name = "Direccion_Entrega")
     private String direccionEntrega;
 
-    @Column
+    @Column(name = "Referencia_Entrega")
     private String referenciaEntrega;
 
     public Integer getId() {

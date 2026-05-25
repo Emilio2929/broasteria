@@ -25,23 +25,24 @@
           <div class="col-md-6">
             <div class="input-group-custom mb-3">
               <label class="form-label">Nombres <span class="text-danger">*</span></label>
-              <input type="text" class="form-control-custom" placeholder="Nombre">
+              <input type="text" class="form-control-custom" placeholder="Nombre" [(ngModel)]="cliente.nombre" name="nombre">
             </div>
 
             <div class="input-group-custom mb-3">
               <label class="form-label">Apellidos <span class="text-danger">*</span></label>
-              <input type="text" class="form-control-custom" placeholder="Apellido">
+              <input type="text" class="form-control-custom" placeholder="Apellido" [(ngModel)]="cliente.apellido" name="apellido">
             </div>
 
             <div class="input-group-custom mb-3">
                 <label class="form-label">Documento <span class="text-danger">*</span></label>
                 <div class="d-flex gap-2">
-                    <select class="form-select form-control-custom" style="width: 35%;" #tipoSelect>
+                    <select class="form-select form-control-custom" style="width: 35%;" [(ngModel)]="tipoDocumentoTexto" name="tipoDocumentoTexto" #tipoSelect>
                         <option value="" disabled selected>Tipo</option>
                         <option value="DNI">DNI</option>
                         <option value="CE">CE</option>
                     </select>
                     <input type="text" class="form-control-custom flex-grow-1" placeholder="Documento"
+                        [(ngModel)]="cliente.numeroDocumento" name="numeroDocumento"
                         #docInput 
                         (blur)="validarDocumentoExistenteEnTiempoReal(docInput.value, tipoSelect.value)">
                 </div>
@@ -57,12 +58,12 @@
 
             <div class="input-group-custom mb-3">
               <label class="form-label">Teléfono <span class="text-danger">*</span></label>
-              <input type="tel" class="form-control-custom" placeholder="987654321">
+              <input type="tel" class="form-control-custom" placeholder="987654321" [(ngModel)]="telefonoTexto" name="telefono">
             </div>
 
             <div class="input-group-custom">
-              <label class="form-label">Dirección</label>
-              <input type="text" class="form-control-custom" placeholder="Las cerezas 123">
+              <label class="form-label">Dirección <span class="text-danger">*</span></label>
+              <input type="text" class="form-control-custom" placeholder="Las cerezas 123" [(ngModel)]="cliente.direccion" name="direccion">
             </div>
           </div>
 
@@ -71,6 +72,7 @@
              <div class="input-group-custom mb-3">
     <label class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
     <input type="email" class="form-control-custom" placeholder="Cliente123@gmail.com"
+           [(ngModel)]="cliente.correo" name="correo"
            #correoInput (blur)="validarCorreoExistenteEnTiempoReal(correoInput.value)">
     <small *ngIf="correoExisteError" class="text-danger">
         <i class="bi bi-exclamation-circle-fill"></i> El correo electrónico ya está registrado.
@@ -80,7 +82,7 @@
               <div class="input-group-custom mb-3">
                 <label class="form-label">Contraseña <span class="text-danger">*</span></label>
                 <div class="position-relative">
-                  <input #inputContrasena type="password" class="form-control-custom w-100" placeholder="123456" style="padding-right: 40px;">
+                  <input #inputContrasena type="password" class="form-control-custom w-100" placeholder="123456" style="padding-right: 40px;" [(ngModel)]="cliente.contrasena" name="contrasena">
                   <span class="eye-icon" (click)="alternarContrasena()">
                     <i #iconoOjo class="bi bi-eye"></i>
                   </span>
@@ -90,7 +92,7 @@
               <div class="input-group-custom mb-4">
                 <label class="form-label">Confirmar Contraseña <span class="text-danger">*</span></label>
                 <div class="position-relative">
-                  <input #inputConfirmarContrasena type="password" class="form-control-custom w-100" placeholder="123456" style="padding-right: 40px;">
+                  <input #inputConfirmarContrasena type="password" class="form-control-custom w-100" placeholder="123456" style="padding-right: 40px;" [(ngModel)]="confirmarContrasena" name="confirmarContrasena">
                   <span class="eye-icon" (click)="alternarConfirmarContrasena()">
                     <i #iconoConfirmarOjo class="bi bi-eye"></i>
                   </span>
@@ -105,7 +107,7 @@
               </div>
 
               <div class="form-check mb-4">
-                <input class="form-check-input custom-check" type="checkbox" id="terms">
+                <input class="form-check-input custom-check" type="checkbox" id="terms" [(ngModel)]="terminosAceptados" name="terminosAceptados">
                 <label class="form-check-label text-muted" for="terms">Acepto términos y condiciones</label>
               </div>
 

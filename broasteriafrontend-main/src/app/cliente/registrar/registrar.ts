@@ -41,6 +41,11 @@ export class Registrar {
   // --- NUEVA VARIABLE DE ESTADO para API EXTERNA RENIEC/SUNAT ---
   documentoAPIValido: boolean = true; 
 
+  tipoDocumentoTexto: string = '';
+  telefonoTexto: string = '';
+  confirmarContrasena: string = '';
+  terminosAceptados: boolean = false;
+
   cliente = {
     nombre: '',
     apellido: '',
@@ -225,16 +230,16 @@ export class Registrar {
 
   async registrarCliente() {
     
-    const nombre = (document.querySelector('input[placeholder="Nombre"]') as HTMLInputElement)?.value.trim();
-    const apellido = (document.querySelector('input[placeholder="Apellido"]') as HTMLInputElement)?.value.trim();
-    const tipoDocumentoTexto = (document.querySelector('.form-select') as HTMLSelectElement)?.value.trim();
-    const numeroDocumento = (document.querySelector('input[placeholder="Documento"]') as HTMLInputElement)?.value.trim();
-    const telefono = (document.querySelector('input[placeholder="987654321"]') as HTMLInputElement)?.value.trim();
-    const direccion = (document.querySelector('input[placeholder="Las cerezas 123"]') as HTMLInputElement)?.value.trim();
-    const correo = (document.querySelector('input[placeholder="Cliente123@gmail.com"]') as HTMLInputElement)?.value.trim();
-    const contrasena = (document.querySelector('input[placeholder="123456"]') as HTMLInputElement)?.value.trim();
-    const confirmarContrasena = (document.querySelectorAll('input[placeholder="123456"]')[1] as HTMLInputElement)?.value.trim();
-    const terminosAceptados = (document.querySelector('input[id="terms"]') as HTMLInputElement)?.checked;
+    const nombre = this.cliente.nombre.trim();
+    const apellido = this.cliente.apellido.trim();
+    const tipoDocumentoTexto = this.tipoDocumentoTexto.trim();
+    const numeroDocumento = this.cliente.numeroDocumento.trim();
+    const telefono = this.telefonoTexto.trim();
+    const direccion = this.cliente.direccion.trim();
+    const correo = this.cliente.correo.trim();
+    const contrasena = this.cliente.contrasena.trim();
+    const confirmarContrasena = this.confirmarContrasena.trim();
+    const terminosAceptados = this.terminosAceptados;
 
     // --- VERIFICACIONES FINALES ANTES DE ENVIAR ---
     if (this.documentoExisteError) {
