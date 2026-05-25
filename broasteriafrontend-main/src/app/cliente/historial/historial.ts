@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ClienteService } from '../../services/cliente.service';
 import { Subscription, interval } from 'rxjs';
+import { environment } from 'src/environments';
 
 @Component({
   selector: 'app-historial',
@@ -79,7 +80,7 @@ export class Historial implements OnInit, OnDestroy {
     
     if(mostrarLoading) this.cargando = true;
 
-    this.http.get<any[]>(`http://localhost:8080/pedidos/historial/${cliente.id}`).subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/pedidos/historial/${cliente.id}`).subscribe({
       next: (data) => {
         // Ordenar por fecha (más reciente primero)
         this.pedidos = data.sort((a, b) => new Date(b.fechaPedido).getTime() - new Date(a.fechaPedido).getTime());
@@ -147,7 +148,7 @@ export class Historial implements OnInit, OnDestroy {
 
     this.cerrarModalCancelacion();
 
-    this.http.put(`http://localhost:8080/pedidos/cancelar/${idPedido}`, {}).subscribe({
+    this.http.put(`${environment.apiUrl}/pedidos/cancelar/${idPedido}`, {}).subscribe({
       next: () => {
         this.notify('Pedido Cancelado', `El pedido #${numeroCliente} ha sido cancelado.`, 'success', 2500);
         this.cargarHistorial(true);

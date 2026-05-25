@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { ClienteService } from '../../services/cliente.service';
 import { FormsModule } from '@angular/forms';
+import { environment } from 'src/environments';
 
 @Component({
   selector: 'app-infocliente',
@@ -80,7 +81,7 @@ export class Infocliente implements OnInit {
       return;
     }
 
-    this.http.put(`http://localhost:8080/clientes/${this.cliente.id}`, nuevoCliente)
+    this.http.put(`${environment.apiUrl}/clientes/${this.cliente.id}`, nuevoCliente)
       .pipe(finalize(() => {
         this.guardando = false;
         this.cdr.detectChanges();
@@ -109,7 +110,7 @@ export class Infocliente implements OnInit {
     this.mostrarModalEliminar = false;
     this.cdr.detectChanges();
 
-    this.http.delete(`http://localhost:8080/clientes/${this.cliente.id}`, { responseType: 'text' })
+    this.http.delete(`${environment.apiUrl}/clientes/${this.cliente.id}`, { responseType: 'text' })
       .pipe(finalize(() => { this.guardando = false; this.cdr.detectChanges(); }))
       .subscribe({
         next: () => {

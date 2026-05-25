@@ -83,11 +83,11 @@ export class ClienteService {
 
   // METODOS PARA PEDIDOS
   obtenerHistorial(idCliente: number): Observable<any[]> {
-     return this.http.get<any[]>(`http://localhost:8080/pedidos/historial/${idCliente}`);
+     return this.http.get<any[]>(`${environment.apiUrl}/pedidos/historial/${idCliente}`);
   }
 
   cancelarPedido(idPedido: number): Observable<void> {
-    return this.http.put<void>(`http://localhost:8080/pedidos/cancelar/${idPedido}`, {});
+    return this.http.put<void>(`${environment.apiUrl}/pedidos/cancelar/${idPedido}`, {});
   }
 
   // METODOS NIUBIZ

@@ -250,7 +250,7 @@ export class Carrito implements OnInit {
 
       merchantlogo: 'https://i.ibb.co/Q7WJB9km/logofastfood.png',
 
-      action: `http://localhost:8080/pagos/niubiz/finalizar?idPedidoPropio=${this.idPedidoTemporal}`,
+      action: `${environment.apiUrl}/pagos/niubiz/finalizar?idPedidoPropio=${this.idPedidoTemporal}`,
 
       complete: () => {
         this.carrito = [];
