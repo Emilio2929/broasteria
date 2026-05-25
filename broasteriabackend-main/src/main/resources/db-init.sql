@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS cliente (
 );
 
 INSERT IGNORE INTO cliente ( Nombre, Apellido, Direccion, Telefono, Numero_Documento, Correo, Contrasena, ID_TipoDocumento) VALUES
-("Local", "Mesero", "local", 999999999, "00000000", "mesero@gmail.com",'$2a$12$n5utosZ6SURNWrtTpjIxqeLX/wuTh/MLDCuIeN10neF2KbVQFVvSe', 1);
+('Local', 'Mesero', 'local', 999999999, '00000000', 'mesero@gmail.com','$2a$12$n5utosZ6SURNWrtTpjIxqeLX/wuTh/MLDCuIeN10neF2KbVQFVvSe', 1);
 
 CREATE TABLE IF NOT EXISTS estado_pedido (
   ID_EstadoPedido INT NOT NULL AUTO_INCREMENT,
