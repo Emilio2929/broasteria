@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap');
+
+:host {
+  font-family: 'Poppins', sans-serif;
+  --primary-orange: #FF5E00;
+  --secondary-orange: #FFB347;
+  --bg-cream: #FFF5EC;
+  --text-dark: #222;
+}
+
+.main-wrapper {
+  background-color: var(--bg-cream);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.orange-header-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%;
+  height: 280px;
+  background: linear-gradient(135deg, var(--secondary-orange) 0%, var(--primary-orange) 100%);
+  border-bottom-left-radius: 50% 20%;
+  border-bottom-right-radius: 50% 20%;
+  z-index: 0;
+  box-shadow: 0 10px 30px rgba(255, 94, 0, 0.2);
+}
+
+.custom-navbar { position: relative; z-index: 10; padding: 1.5rem; }
+.nav-item { color: #fff; font-weight: 600; text-decoration: none; margin: 0 10px; transition: 0.3s; }
+.nav-item:hover { color: #ffecec; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+.nav-item.active { border-bottom: 2px solid #fff; }
+
+.profile-btn {
+  background: rgba(255,255,255,0.25); color: #fff; width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center; border-radius: 50%;
+  cursor: pointer; transition: 0.3s;
+}
+.profile-btn:hover { background: #fff; color: var(--primary-orange); }
+
+.content-container { position: relative; z-index: 5; margin-top: 1rem; }
+
+.page-title {
+  color: #fff; text-align: center; font-weight: 900; 
+  font-size: 2.5rem; margin-bottom: 2rem; text-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.cart-item-card {
+  background: #fff; border-radius: 20px; padding: 15px;
+  margin-bottom: 15px; border: none;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+  transition: transform 0.2s; display: flex; align-items: center; gap: 15px;
+}
+.cart-item-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+
+.item-img {
+  width: 90px; height: 90px; object-fit: cover; border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.item-info h5 { font-weight: 700; color: var(--text-dark); margin-bottom: 5px; }
+.item-price { color: var(--primary-orange); font-weight: 800; font-size: 1.1rem; }
+
+.qty-control {
+  background: #f8f9fa; border-radius: 30px; padding: 5px;
+  display: flex; align-items: center; gap: 10px; border: 1px solid #eee;
+}
+.btn-qty {
+  width: 30px; height: 30px; border-radius: 50%; border: none;
+  background: #fff; color: var(--primary-orange); font-weight: 900;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.2s;
+}
+.btn-qty:hover:not(:disabled) { background: var(--primary-orange); color: #fff; }
+.btn-qty:disabled { background: #eee; color: #aaa; cursor: not-allowed; }
+.qty-val { font-weight: 700; min-width: 20px; text-align: center; }
+
+.custom-input {
+  border: 1px solid #eee; border-radius: 10px; padding: 8px 12px; font-size: 0.9rem; width: 100%;
+  background: #fafafa; transition: 0.3s;
+}
+.custom-input:focus { border-color: var(--secondary-orange); outline: none; background: #fff; }
+
+.summary-card {
+  background: #fff; border-radius: 25px; padding: 30px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.08); position: sticky; top: 20px;
+}
+.summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 1.05rem; }
+.total-row {
+  border-top: 2px dashed #eee; padding-top: 15px; margin-top: 15px;
+  font-weight: 900; font-size: 1.5rem; color: var(--text-dark);
+}
+
+.btn-checkout {
+  background: linear-gradient(90deg, #FF8C00, #FF5E00);
+  color: #fff; border: none; width: 100%; padding: 15px;
+  border-radius: 50px; font-weight: 700; letter-spacing: 1px;
+  box-shadow: 0 10px 20px rgba(255, 94, 0, 0.3); margin-top: 20px; transition: 0.3s;
+}
+.btn-checkout:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(255, 94, 0, 0.4); }
+.btn-checkout:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+
+.btn-continue {
+  background: transparent; border: 2px solid #eee; color: #888;
+  width: 100%; padding: 12px; border-radius: 50px; font-weight: 600;
+  margin-top: 10px; transition: 0.3s;
+}
+.btn-continue:hover { border-color: var(--primary-orange); color: var(--primary-orange); }
+
+.modal-backdrop {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1040;
+}
+.custom-modal {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: #fff; border-radius: 25px; width: 90%; max-width: 450px;
+  padding: 30px; z-index: 1050; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes popIn { from { transform: translate(-50%, -60%) scale(0.9); opacity: 0; } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+
+.payment-option-card {
+  border: 2px solid #f0f0f0; border-radius: 15px; padding: 15px;
+  cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 15px;
+}
+.payment-option-card:hover { border-color: var(--secondary-orange); background: #fffaf0; }
+.payment-option-card.selected {
+  border-color: var(--primary-orange); background: #fff5ec;
+  box-shadow: 0 5px 15px rgba(255, 94, 0, 0.15);
+}
+.radio-custom { accent-color: var(--primary-orange); transform: scale(1.2); }
+
+.icon-trash { color: #ff4d4d; cursor: pointer; transition: 0.2s; padding: 5px; }
+.icon-trash:hover { transform: scale(1.2); color: #d60000; }
+
+.direccion-input {
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  width: 100%;
+  background: #fff;
+  transition: 0.3s;
+}
+
+.direccion-input:focus {
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 3px rgba(255, 94, 0, 0.2);
+  outline: none;
+}
+
+.btn-aceptar-direccion {
+  background: var(--primary-orange);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.btn-aceptar-direccion:hover {
+  background: #e65400;
+  box-shadow: 0 5px 15px rgba(255, 94, 0, 0.4);
+}
+
+.btn-cancelar-direccion {
+  background: #f0f0f0;
+  color: #666;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.btn-cancelar-direccion:hover {
+  background: #e0e0e0;
+}
+

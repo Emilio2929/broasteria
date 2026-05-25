@@ -1,0 +1,235 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700;900&display=swap');
+
+:host {
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  --primary-orange: #FF5E00;
+  --bg-cream: #FFF5EC;
+  --dark-btn: #222;
+  --error-color: #dc3545;
+}
+
+/* === LAYOUT GENERAL === */
+.staff-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--bg-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+}
+
+/* Fondo Ondulado */
+.orange-wave {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(135deg, #FFB347 0%, #FF5E00 100%);
+  border-bottom-left-radius: 50% 20%;
+  border-bottom-right-radius: 50% 20%;
+  z-index: 0;
+  box-shadow: 0 10px 30px rgba(255, 94, 0, 0.2);
+}
+
+/* === TARJETA PRINCIPAL === */
+.login-card-staff {
+  background: #ffffff;
+  width: 100%;
+  max-width: 450px;
+  border-radius: 25px;
+  padding: 3.5rem 2.5rem;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.15); 
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+/* Barra superior SÓLIDA */
+.card-top-accent {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 8px;
+  background-color: var(--primary-orange); 
+  border-radius: 25px 25px 0 0;
+}
+
+.brand-title {
+    font-weight: 800;
+    color: var(--primary-orange);
+    margin: 0;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+}
+
+/* === INPUTS ESTILIZADOS === */
+.input-group-staff .form-control {
+    border: 2px solid #eee;
+    background: #fdfdfd;
+    border-right: none;
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    transition: all 0.3s;
+    border-radius: 12px 0 0 12px;
+}
+.input-group-staff .staff-addon {
+    background: #fdfdfd;
+    border: 2px solid #eee;
+    border-left: none;
+    color: #888;
+    cursor: pointer;
+    border-radius: 0 12px 12px 0;
+    padding-right: 15px;
+}
+.input-group-staff .form-control:focus {
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 4px rgba(255, 94, 0, 0.1);
+    background: #fff;
+    border-right: none;
+    z-index: 10;
+}
+.input-group-staff .form-control:focus + .staff-addon {
+    border-color: var(--primary-orange);
+    color: var(--primary-orange);
+}
+
+
+/* === BOTONES === */
+.btn-staff {
+  background: var(--dark-btn); 
+  color: #fff;
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  cursor: pointer;
+}
+
+.btn-staff:hover:not([disabled]) {
+  background: var(--primary-orange);
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(255, 94, 0, 0.3);
+}
+
+.btn-staff:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* === TOAST === */
+.toast-simple {
+    position: fixed;
+    top: 30px; 
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+    z-index: 9999; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-width: 300px;
+}
+
+.animate-toast {
+    animation: slideDownFade 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.toast-simple.error {
+    background-color: #fff;
+    color: var(--error-color);
+    border-left: 5px solid var(--error-color);
+}
+
+.toast-simple.success {
+    background-color: #fff;
+    color: #28a745;
+    border-left: 5px solid #28a745;
+}
+
+.toast-simple i {
+    font-size: 1.2rem;
+}
+
+/* Animaciones */
+.animate-in {
+  animation: fadeInUp 0.7s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDownFade {
+  from { opacity: 0; transform: translate(-50%, -50px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+/* === ESTILOS DEL MODAL DE ÉXITO === */
+
+.success-modal-content {
+    padding: 20px 0;
+    text-align: center;
+}
+
+.success-title {
+    color: #28a745; 
+    font-size: 1.8rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.success-subtitle {
+    color: #666;
+    font-weight: 400;
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+/* Círculo del Check */
+.check-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #e6ffed; 
+    color: #28a745;
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
+}
+
+/* Animación de la aparición del Check */
+.animate__checkmark i {
+    opacity: 0;
+    animation: fadeInCheck 0.5s ease-out forwards 0.3s;
+}
+
+@keyframes fadeInCheck {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

@@ -1,0 +1,44 @@
+<button class="chat-fab" (click)="toggleChat()">
+  <i class="bi bi-chat-dots-fill" *ngIf="!mostrarChat"></i>
+  <i class="bi bi-x-lg" *ngIf="mostrarChat"></i>
+</button>
+
+<div class="chat-window shadow-lg" *ngIf="mostrarChat">
+  
+  <div class="chat-header">
+    <div class="d-flex align-items-center">
+      <div class="bot-avatar me-2">🤖</div>
+      <div>
+        <h6 class="m-0 fw-bold">PolloBot IA</h6>
+        <small class="text-white-50">En línea</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-body">
+    <div *ngFor="let msg of mensajes" 
+         [ngClass]="{'msg-bot': msg.emisor === 'bot', 'msg-user': msg.emisor === 'user'}">
+      <div class="mensaje-burbuja">
+        {{ msg.texto }}
+      </div>
+    </div>
+    
+    <div *ngIf="cargando" class="msg-bot">
+      <div class="mensaje-burbuja typing">
+        <span>.</span><span>.</span><span>.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-footer">
+    <form (ngSubmit)="enviarMensaje()" class="d-flex gap-2">
+      <input type="text" class="form-control form-control-sm" 
+             [(ngModel)]="mensajeUsuario" name="msg" 
+             placeholder="Escribe tu consulta..." autocomplete="off">
+      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!mensajeUsuario || cargando">
+        <i class="bi bi-send-fill"></i>
+      </button>
+    </form>
+  </div>
+
+</div>

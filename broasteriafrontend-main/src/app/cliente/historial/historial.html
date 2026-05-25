@@ -1,0 +1,90 @@
+<div class="main-wrapper">
+
+  <div class="orange-header-bg"></div>
+
+  <nav class="custom-navbar d-flex justify-content-end align-items-center">
+    <div class="nav-links d-flex gap-4 align-items-center">
+      <a href="#" class="nav-item" (click)="inicio($event)">INICIO</a>
+      
+      <a href="#" class="nav-item" (click)="carrito($event)">
+        <i class="bi bi-cart-fill"></i> CARRITO
+      </a>
+      
+      <a href="#" class="nav-item active" (click)="historial($event)">HISTORIAL</a>
+      <div class="profile-btn" (click)="abrirPerfil()">
+        <i class="bi-person-fill fs-5"></i>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container content-container">
+    <h1 class="page-title">Mis Pedidos</h1>
+
+    <div *ngIf="cargando" class="text-center py-5 text-white">
+      <div class="spinner-border text-light" role="status"></div>
+      <p class="mt-2">Cargando...</p>
+    </div>
+
+    <div *ngIf="!cargando && pedidos.length === 0" class="text-center py-5 bg-white rounded-4 shadow-sm mx-auto" style="max-width: 600px;">
+      <i class="bi bi-clock-history text-muted opacity-50" style="font-size: 4rem;"></i>
+      <h4 class="mt-3 fw-bold text-muted">Sin historial</h4>
+      <p class="text-secondary">Aún no has realizado pedidos.</p>
+      <button class="btn btn-warning fw-bold text-white rounded-pill mt-2" (click)="inicio($event)">Ver Menú</button>
+    </div>
+
+    <div class="row justify-content-center" *ngIf="!cargando && pedidos.length > 0">
+      <div class="col-lg-8 col-md-10" *ngFor="let pedido of pedidos">
+        
+        <div class="order-card">
+          <div class="order-header">
+            <div>
+              <div class="order-id">PEDIDO #{{ pedido.numeroPedidoCliente }}</div>
+              <div class="order-date">{{ pedido.fechaPedido | date:'dd/MM/yyyy h:mm a' }}</div>
+            </div>
+            <div class="status-badge" [ngClass]="getClassEstado(pedido.estado?.nombre)">
+              <i class="bi" [ngClass]="getIconEstado(pedido.estado?.nombre)"></i>
+              {{ pedido.estado?.nombre }}
+            </div>
+          </div>
+
+          <div class="order-body">
+            <div class="order-item-row" *ngFor="let d of pedido.detalles">
+              <div>
+                <span class="item-name">{{ d.producto.nombre }}</span>
+                <span class="item-meta">x{{ d.cantidad }}</span>
+                <small *ngIf="d.detalleExtra" class="d-block text-warning small fst-italic">Nota: {{ d.detalleExtra }}</small>
+              </div>
+              <div class="fw-bold">S/ {{ d.subtotal | number:'1.2-2' }}</div>
+            </div>
+          </div>
+
+          <div class="order-footer">
+            <span class="text-muted fw-bold small">TOTAL PAGADO</span>
+            <div class="d-flex align-items-center gap-3">
+              <span class="total-price">S/ {{ pedido.totalPedido | number:'1.2-2' }}</span>
+              <button class="btn-cancel" *ngIf="pedido.estado?.nombre === 'Pendiente'" (click)="confirmarCancelacion(pedido.id)">
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="mostrarModalCancelar" (click)="cerrarModalCancelacion()"></div>
+  <div class="custom-modal text-center" *ngIf="mostrarModalCancelar">
+    <div class="mb-3 text-warning">
+      <i class="bi bi-exclamation-triangle-fill" style="font-size: 3rem;"></i>
+    </div>
+    <h3 class="fw-bold mb-3">¿Cancelar Pedido?</h3>
+    <p class="text-muted mb-4">Vas a cancelar el pedido <strong>#{{ pedidoACancelar }}</strong>.</p>
+    
+    <div class="d-flex gap-3 justify-content-center">
+      <button class="btn btn-secondary rounded-pill px-4" (click)="cerrarModalCancelacion()">Volver</button>
+      <button class="btn btn-danger rounded-pill px-4" (click)="ejecutarCancelacionPedido()">Sí, Cancelar</button>
+    </div>
+  </div>
+
+</div>

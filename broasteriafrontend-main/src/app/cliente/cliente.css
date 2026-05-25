@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap');
+
+:host {
+  font-family: 'Poppins', sans-serif;
+  --primary-orange: #FF5E00;
+  --bg-cream: #FFF5EC;
+  --dark-text: #222;
+}
+
+/* === FONDO Y ESTRUCTURA (IGUAL A REGISTRAR) === */
+.main-login-wrapper {
+  background-color: var(--bg-cream);
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;       
+  align-items: center; 
+  justify-content: center;
+  padding: 20px;
+}
+
+/* 1. Forma Curva Superior */
+.bg-shape-top {
+  position: absolute;
+  top: 0; right: 0;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(135deg, #FFB347 0%, #FF5E00 100%);
+  border-radius: 0; 
+  border-bottom-left-radius: 50% 100%;
+  z-index: 1;
+}
+
+/* 2. Círculo Inferior */
+.bg-shape-bottom {
+  position: absolute;
+  bottom: -50px; left: -50px;
+  width: 400px; height: 400px;
+  background: rgba(255, 94, 0, 0.1);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+/* 3. Decoración Flotante */
+.floating-decoration {
+  position: absolute;
+  top: 15%; left: 5%;
+  width: 150px;
+  opacity: 0.1;
+  animation: floatBg 6s ease-in-out infinite;
+  z-index: 1;
+}
+@keyframes floatBg { 0%,100% {transform: translateY(0);} 50% {transform: translateY(-20px);} }
+
+/* === BOTÓN VOLVER === */
+.btn-back {
+  position: absolute;
+  top: 30px; left: 30px;
+  z-index: 10;
+  text-decoration: none;
+  color: var(--primary-orange);
+  font-weight: 700;
+  background: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+  display: flex; align-items: center; gap: 8px;
+}
+.btn-back:hover { transform: translateX(-5px); color: #222; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+
+/* === TARJETA LOGIN (Estilo Registrar) === */
+.login-card {
+  width: 100%;
+  max-width: 900px;
+  background: #fff;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.08); 
+  border: 1px solid rgba(255,255,255,0.5);
+  backdrop-filter: blur(10px);
+  z-index: 5; 
+}
+
+.side-panel {
+  background: linear-gradient(160deg, #FF5E00, #ff8c00);
+  position: relative;
+  overflow: hidden;
+}
+/* Patrón sutil para el panel naranja */
+.side-panel::before {
+  content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+  background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-size: 20px 20px; opacity: 0.5;
+}
+
+.login-logo { width: 250px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); }
+.floating-anim { animation: floatLogo 6s ease-in-out infinite; }
+@keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+/* === INPUTS Y FORMULARIO === */
+.input-group-text { background-color: #fcfcfc !important; border-color: #eee; }
+.form-control { background-color: #fcfcfc !important; border-color: #eee; }
+
+.form-control:focus {
+  background-color: #fff !important;
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 0.2rem rgba(255, 94, 0, 0.1);
+}
+.input-group:focus-within .input-group-text {
+  border-color: var(--primary-orange);
+  background-color: #fff !important;
+}
+
+/* Icono Ojo */
+.eye-toggle {
+  position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+  color: #999; cursor: pointer; z-index: 10; transition: 0.3s;
+}
+.eye-toggle:hover { color: var(--primary-orange); }
+
+/* === BOTONES === */
+.btn-login {
+  background: #222; color: #fff; padding: 12px; border-radius: 50px; font-weight: 700; border: none; letter-spacing: 1px; transition: all 0.3s ease;
+}
+.btn-login:hover:not(:disabled) {
+  background: var(--primary-orange); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(255, 94, 0, 0.3);
+}
+
+.btn-outline-dark:hover { background: #222; color: #fff; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .bg-shape-top { 
+    width: 100%; height: 40%;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 50% 20%;
+  }
+}

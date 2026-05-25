@@ -1,0 +1,358 @@
+<div class="main-wrapper">
+
+  <div class="orange-background-shape"></div>
+
+  <nav class="custom-navbar d-flex justify-content-end align-items-center p-4 position-relative" style="z-index: 10;">
+    <div class="nav-links d-flex gap-4 align-items-center">
+      <a href="#" class="nav-item" (click)="inicio($event)">INICIO</a>
+      <a href="#" class="nav-item" (click)="carrito($event)"><i class="bi bi-cart-fill"></i> CARRITO</a>
+      <a href="#" class="nav-item" (click)="historial($event)">HISTORIAL</a>
+      <div class="profile-btn" (click)="abrirPerfil()"><i class="bi-person-fill fs-5"></i></div>
+    </div>
+  </nav>
+
+  <div class="hero-section container-fluid">
+    <div class="row align-items-center" style="min-height: 500px;">
+      
+      <div class="col-md-5 ps-md-5">
+        <div class="brand-logo mb-3">
+          <img src="logo.png" alt="Logo" width="90">
+        </div>
+        
+        <p class="spicy-tag mb-1">- CALIDAD PREMIUM</p>
+        <h1 class="display-3 mb-3">D'LICIAS <br> FAST FOOD</h1>
+        <p class="text-secondary fw-medium mb-4" style="max-width: 400px; font-size: 1.1rem;">
+          ¿Hambre? Pide lo mejor. Pollo crujiente, hamburguesas monstruosas y el sabor que te encanta.
+        </p>
+
+        <div class="btn-hero text-decoration-none d-inline-flex align-items-center" 
+             (click)="irAlMenu()" 
+             style="cursor: pointer;">
+          ORDENAR AHORA <i class="bi bi-arrow-right-circle-fill ms-2"></i>
+        </div>
+
+        <div class="hero-thumbnails mt-5 d-flex gap-3">
+          <img src="hamburguesa_clasica.png" class="thumb-img" alt="1">
+          <img src="hamburguesa_royal.jpg" class="thumb-img" alt="2">
+          <img src="hamburguesa_monster.jpg" class="thumb-img" alt="3">
+        </div>
+      </div>
+
+      <div class="col-md-7 text-center">
+        <img src="logo.png" class="hero-burger-img floating-anim" alt="Hero Burger">
+      </div>
+    </div>
+  </div>
+
+  <div class="products-bg" id="menu-abajo">
+    <div class="container">
+      
+      <div class="text-center mb-5">
+        <h2 class="fw-bolder" style="font-size: 3rem; color: #222;">Nuestro <span style="color: #FF5E00;">Menú</span></h2>
+        <p class="text-muted">Elige tu categoría favorita y disfruta</p>
+      </div>
+
+      <div class="cat-broaster mb-5">
+        <div class="section-header">
+          <div class="section-line"></div>
+          <h4>Broaster</h4>
+        </div>
+        
+        <div class="row g-4">
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(1)"
+               (click)="agregarAlCarrito($event,1, 'Pollo broaster Pierna', 10, 'pollo_pierna.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="pollo_pierna.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Pollo Pierna</h5>
+              <small class="desc-text">Crujiente y jugoso</small>
+
+              <!-- Precio dinámico -->
+              <div class="price-badge">{{ getPrice(1) }}</div>
+
+              <div class="soldout-badge" *ngIf="isOutOfStock(1)">AGOTADO</div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(2)"
+               (click)="agregarAlCarrito($event,2, 'Pollo broaster Ala', 9, 'pollo_ala.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="pollo_ala.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Pollo Ala</h5>
+              <small class="desc-text">Sabor clásico</small>
+              <div class="price-badge">{{ getPrice(2) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(2)">AGOTADO</div>
+            </div>
+          </div>
+
+           <div class="col-xl-3 col-md-4 col-sm-6" 
+                [class.out-of-stock]="isOutOfStock(3)"
+                (click)="agregarAlCarrito($event,3, 'Pollo broaster Pecho', 13, 'pollo_pecho.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="pollo_pecho.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Pollo Pecho</h5>
+              <small class="desc-text">Pura carne</small>
+              <div class="price-badge">{{ getPrice(3) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(3)">AGOTADO</div>
+            </div>
+          </div>
+
+           <div class="col-xl-3 col-md-4 col-sm-6" 
+                [class.out-of-stock]="isOutOfStock(4)"
+                (click)="agregarAlCarrito($event,4, 'Pollo broaster Encuentro', 12, 'pollo_encuentro.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="pollo_encuentro.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Pollo Encuentro</h5>
+              <small class="desc-text">El favorito</small>
+              <div class="price-badge">{{ getPrice(4) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(4)">AGOTADO</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-burger mb-5">
+        <div class="section-header">
+          <div class="section-line"></div>
+          <h4>Hamburguesas</h4>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(5)"
+               (click)="agregarAlCarrito($event,5, 'Hamburguesa Clásica', 6, 'hamburguesa_clasica.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="hamburguesa_clasica.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Clásica</h5>
+              <div class="price-badge">{{ getPrice(5) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(5)">AGOTADO</div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(6)"
+               (click)="agregarAlCarrito($event,6, 'Hamburguesa Royal', 8, 'hamburguesa_royal.jpg')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="hamburguesa_royal.jpg" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Royal</h5>
+              <div class="price-badge">{{ getPrice(6) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(6)">AGOTADO</div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(7)"
+               (click)="agregarAlCarrito($event,7, 'Hamburguesa Monster', 13, 'hamburguesa_monster.jpg')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="hamburguesa_monster.jpg" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Monster</h5>
+              <div class="price-badge">{{ getPrice(7) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(7)">AGOTADO</div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(8)"
+               (click)="agregarAlCarrito($event,8, 'Salchipapa', 6, 'salchipapa.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="salchipapa.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Salchipapa</h5>
+              <div class="price-badge">{{ getPrice(8) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(8)">AGOTADO</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-caldos mb-5">
+        <div class="section-header">
+          <div class="section-line"></div>
+          <h4>Caldos</h4>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(9)"
+               (click)="agregarAlCarrito($event,9, 'Caldo sin presa', 10, 'caldosinpresa.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="caldosinpresa.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Caldo S/Presa</h5>
+              <div class="price-badge">{{ getPrice(9) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(9)">AGOTADO</div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(10)"
+               (click)="agregarAlCarrito($event,10, 'Caldo con presa', 12, 'caldoconpresa.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="caldoconpresa.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Caldo C/Presa</h5>
+              <div class="price-badge">{{ getPrice(10) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(10)">AGOTADO</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-extra mb-5">
+        <div class="section-header">
+          <div class="section-line"></div>
+          <h4>Extras</h4>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(11)"
+               (click)="agregarAlCarrito($event,11, 'Porción de papas', 4, 'porciondepapas.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="porciondepapas.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Papas Fritas</h5>
+              <div class="price-badge">{{ getPrice(11) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(11)">AGOTADO</div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(12)"
+               (click)="agregarAlCarrito($event,12, 'Porción de arroz', 4, 'porciondearroz.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="porciondearroz.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Arroz Blanco</h5>
+              <div class="price-badge">{{ getPrice(12) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(12)">AGOTADO</div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(13)"
+               (click)="agregarAlCarrito($event,13, 'Hot Dog', 1.5, 'hotdog.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="hotdog.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Hot Dog</h5>
+              <div class="price-badge">{{ getPrice(13) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(13)">AGOTADO</div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(14)"
+               (click)="agregarAlCarrito($event,14, 'Huevo', 1, 'huevo.jpg')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="huevo.jpg" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Huevo Frito</h5>
+              <div class="price-badge">{{ getPrice(14) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(14)">AGOTADO</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cat-bebidas mb-5">
+        <div class="section-header">
+          <div class="section-line"></div>
+          <h4>Bebidas</h4>
+        </div>
+        
+        <div class="row g-4">
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(15)"
+               (click)="agregarAlCarrito($event,15, 'Inka Cola personal', 3, 'incakola.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="incakola.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Inka Cola P.</h5>
+              <div class="price-badge">{{ getPrice(15) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(15)">AGOTADO</div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(16)"
+               (click)="agregarAlCarrito($event,16, 'Fanta personal', 3, 'fanta.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="fanta.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Fanta P.</h5>
+              <div class="price-badge">{{ getPrice(16) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(16)">AGOTADO</div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(17)"
+               (click)="agregarAlCarrito($event,17, 'Sprite personal', 3, 'sprite.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="sprite.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Sprite P.</h5>
+              <div class="price-badge">{{ getPrice(17) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(17)">AGOTADO</div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-md-4 col-sm-6" 
+               [class.out-of-stock]="isOutOfStock(18)"
+               (click)="agregarAlCarrito($event,18, 'Coca Cola personal', 3, 'cocacola.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="cocacola.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Coca Cola P.</h5>
+              <div class="price-badge">{{ getPrice(18) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(18)">AGOTADO</div>
+            </div>
+          </div>
+
+           <div class="col-xl-3 col-md-4 col-sm-6" 
+                [class.out-of-stock]="isOutOfStock(19)"
+                (click)="agregarAlCarrito($event,19, 'Coca Cola 1Lt', 6.5, 'cocacolalitro.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="cocacolalitro.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Coca Cola 1Lt</h5>
+              <div class="price-badge">{{ getPrice(19) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(19)">AGOTADO</div>
+            </div>
+          </div>
+
+           <div class="col-xl-3 col-md-4 col-sm-6" 
+                [class.out-of-stock]="isOutOfStock(20)"
+                (click)="agregarAlCarrito($event,20, 'Inka Cola 1Lt', 6.5, 'inkacolalitro.png')">
+            <div class="product-card">
+              <div class="img-wrapper mb-3"><img src="inkacolalitro.png" class="img-fluid" alt="img"></div>
+              <h5 class="card-title">Inka Cola 1Lt</h5>
+              <div class="price-badge">{{ getPrice(20) }}</div>
+              <div class="soldout-badge" *ngIf="isOutOfStock(20)">AGOTADO</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <button class="scroll-top-btn" [class.show-scroll]="showScrollButton" (click)="volverArriba()">
+    <i class="bi bi-arrow-up-short"></i>
+  </button>
+
+  @if (mostrarModalLogin) {
+    <div class="modal-overlay">
+      <div class="modal-content animate__animated animate__zoomIn">
+        
+        <button class="close-modal" (click)="cerrarModal()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+  
+        <div class="modal-body-content p-4 text-center">
+          <div class="icon-warning mb-3" style="font-size: 3rem; color: var(--primary-orange);">
+            <i class="bi bi-person-circle"></i>
+          </div>
+          <h3 class="fw-bold mb-3">¡Inicia Sesión!</h3>
+          <p class="text-muted mb-4">
+            Necesitas iniciar sesión para acceder a secciones como tu Carrito, Historial y Perfil.
+          </p>
+          
+          <div class="d-grid gap-2">
+            <button class="btn btn-warning fw-bold text-white py-2" routerLink="/ini-cliente">
+              Iniciar Sesión
+            </button>
+            <button class="btn btn-light text-secondary fw-bold py-2" (click)="cerrarModal()">
+              Continuar Navegando
+            </button>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+  }
+
+</div>

@@ -1,0 +1,133 @@
+.card { border-radius: 5px; border:none}
+.card-header { background: #28a748}
+.btn-save { background: linear-gradient(90deg,#28a745); border: none; color:#fff;}
+
+/* Contenedor Principal de la Tarjeta */
+.card {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1); 
+  overflow: hidden; 
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Encabezado con Gradiente Verde */
+.card-header {
+  background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  padding: 1.5rem 2rem;
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-body {
+  padding: 2rem;
+  background-color: #ffffff;
+}
+
+.form-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Inputs y Selects */
+.form-control, .form-select {
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  padding: 0.75rem 1rem;
+  background-color: #f8f9fa;
+  color: #333;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+/* Efecto al hacer clic en un input */
+.form-control:focus, .form-select:focus {
+  background-color: #fff;
+  border-color: #28a745;
+  box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.15); 
+  outline: none;
+}
+
+/* Estilos para el Input de contraseña */
+.input-group .form-control {
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-left: none;
+  border-radius: 0 12px 12px 0;
+  color: #888;
+  transition: all 0.3s ease;
+}
+
+/* Cuando el input de contraseña tiene foco, iluminar tbn el borde del icono */
+.form-control:focus + .input-group-text {
+  background-color: #fff;
+  border-color: #28a745;
+}
+
+.input-group-text:hover {
+  color: #28a745;
+  background-color: #fff;
+}
+
+/* Mensajes de error */
+.text-danger {
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Botones */
+.btn {
+  padding: 0.7rem 1.8rem;
+  border-radius: 50px; 
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-secondary {
+  background-color: #f1f3f5;
+  color: #495057;
+}
+
+.btn-secondary:hover {
+  background-color: #e9ecef;
+  color: #212529;
+  transform: translateY(-2px);
+}
+
+/* Botón Guardar verdecito*/
+.btn-save {
+  background-color: #0ea001;;
+  color: white;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-save:hover {
+  background-color: #0ea001;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.btn-save:disabled {
+  background: #ccc;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}

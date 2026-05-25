@@ -1,0 +1,144 @@
+<div class="register-wrapper">
+  
+  <div class="bg-shape-top"></div>
+  <div class="bg-shape-bottom"></div>
+  
+  <img src="logo.png" class="floating-decoration" alt="Decoration">
+
+  <a href="#" class="btn-back" (click)="irALogin($event)">
+    <i class="bi bi-arrow-left"></i> Volver
+  </a>
+
+  <div class="container d-flex justify-content-center align-items-center min-vh-100 position-relative" style="z-index: 2;">
+    
+    <div class="register-card animate__animated animate__fadeInUp">
+      
+      <div class="text-center mb-4">
+        <img src="logo.png" alt="Logo" class="register-logo mb-3">
+        <h2 class="fw-bold" style="color: #222;">Crea tu <span style="color: #FF5E00;">Cuenta</span></h2>
+        <p class="text-muted">Únete a D'Licias Fast Food y disfruta promociones exclusivas</p>
+      </div>
+
+      <form>
+        <div class="row g-4">
+          
+          <div class="col-md-6">
+            <div class="input-group-custom mb-3">
+              <label class="form-label">Nombres <span class="text-danger">*</span></label>
+              <input type="text" class="form-control-custom" placeholder="Nombre">
+            </div>
+
+            <div class="input-group-custom mb-3">
+              <label class="form-label">Apellidos <span class="text-danger">*</span></label>
+              <input type="text" class="form-control-custom" placeholder="Apellido">
+            </div>
+
+            <div class="input-group-custom mb-3">
+                <label class="form-label">Documento <span class="text-danger">*</span></label>
+                <div class="d-flex gap-2">
+                    <select class="form-select form-control-custom" style="width: 35%;" #tipoSelect>
+                        <option value="" disabled selected>Tipo</option>
+                        <option value="DNI">DNI</option>
+                        <option value="CE">CE</option>
+                    </select>
+                    <input type="text" class="form-control-custom flex-grow-1" placeholder="Documento"
+                        #docInput 
+                        (blur)="validarDocumentoExistenteEnTiempoReal(docInput.value, tipoSelect.value)">
+                </div>
+                
+                <small *ngIf="documentoExisteError && docInput.value && tipoSelect.value" class="text-danger">
+                    <i class="bi bi-exclamation-circle-fill"></i> El número de documento ya está registrado.
+                </small>
+                
+                <small *ngIf="!documentoAPIValido && docInput.value && tipoSelect.value" class="text-danger">
+                    <i class="bi bi-exclamation-circle-fill"></i> El documento no es válido
+                </small>
+            </div>
+
+            <div class="input-group-custom mb-3">
+              <label class="form-label">Teléfono <span class="text-danger">*</span></label>
+              <input type="tel" class="form-control-custom" placeholder="987654321">
+            </div>
+
+            <div class="input-group-custom">
+              <label class="form-label">Dirección</label>
+              <input type="text" class="form-control-custom" placeholder="Las cerezas 123">
+            </div>
+          </div>
+
+          <div class="col-md-6 d-flex flex-column justify-content-between">
+            <div>
+             <div class="input-group-custom mb-3">
+    <label class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
+    <input type="email" class="form-control-custom" placeholder="Cliente123@gmail.com"
+           #correoInput (blur)="validarCorreoExistenteEnTiempoReal(correoInput.value)">
+    <small *ngIf="correoExisteError" class="text-danger">
+        <i class="bi bi-exclamation-circle-fill"></i> El correo electrónico ya está registrado.
+    </small>
+</div>
+
+              <div class="input-group-custom mb-3">
+                <label class="form-label">Contraseña <span class="text-danger">*</span></label>
+                <div class="position-relative">
+                  <input #inputContrasena type="password" class="form-control-custom w-100" placeholder="123456" style="padding-right: 40px;">
+                  <span class="eye-icon" (click)="alternarContrasena()">
+                    <i #iconoOjo class="bi bi-eye"></i>
+                  </span>
+                </div>
+              </div>
+              
+              <div class="input-group-custom mb-4">
+                <label class="form-label">Confirmar Contraseña <span class="text-danger">*</span></label>
+                <div class="position-relative">
+                  <input #inputConfirmarContrasena type="password" class="form-control-custom w-100" placeholder="123456" style="padding-right: 40px;">
+                  <span class="eye-icon" (click)="alternarConfirmarContrasena()">
+                    <i #iconoConfirmarOjo class="bi bi-eye"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="form-check mb-2">
+                <input class="form-check-input custom-check" type="checkbox" id="promo">
+                <label class="form-check-label text-muted" for="promo">Recibir promociones deliciosas</label>
+              </div>
+
+              <div class="form-check mb-4">
+                <input class="form-check-input custom-check" type="checkbox" id="terms">
+                <label class="form-check-label text-muted" for="terms">Acepto términos y condiciones</label>
+              </div>
+
+                            <button type="button" 
+                      (click)="registrarCliente()" 
+                      class="btn-register-premium w-100" 
+                      [disabled]="documentoExisteError || correoExisteError || !documentoAPIValido">
+                CREAR CUENTA <i class="bi bi-arrow-right-circle-fill ms-2"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="isToastVisible" class="toast-notification">
+    <i class="bi bi-info-circle-fill me-2"></i> {{ toastMessage }}
+  </div>
+
+  <div *ngIf="isModalVisible" class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal-content-custom animate__animated animate__zoomIn" (click)="$event.stopPropagation()">
+      <div class="modal-header-icon" [ngClass]="modalIcono">
+        <i class="bi" [ngClass]="modalIcono === 'success' ? 'bi-check-lg' : 'bi-exclamation-lg'"></i>
+      </div>
+      
+      <h3 class="fw-bold mt-3">{{ modalTitulo }}</h3>
+      <p class="text-muted mb-4">{{ modalMensaje }}</p>
+      
+      <button type="button" class="btn-modal-action" (click)="cerrarModal()">
+        {{ modalIcono === 'success' ? '¡Genial!' : 'Entendido' }}
+      </button>
+    </div>
+  </div>
+
+</div>

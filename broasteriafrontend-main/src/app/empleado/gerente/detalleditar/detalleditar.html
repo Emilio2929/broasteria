@@ -1,0 +1,117 @@
+<div class="card">
+  <!-- Encabezado -->
+  <div class="card-header">
+    <i class="bi bi-person-lines-fill me-2"></i>
+    <span>{{ empleado.idEmpleado ? 'Editar Empleado' : 'Nuevo Empleado' }}</span>
+  </div>
+
+  <!-- Cuerpo del Formulario -->
+  <div class="card-body">
+    <form (ngSubmit)="guardar()">
+      
+      <!--Nombres y Apellidos-->
+      <div class="row g-4 mb-4">
+        <div class="col-md-6">
+          <label class="form-label">Nombres <span class="text-danger d-inline">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="empleado.nombre" name="nombre" placeholder="Ej. Juan" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Apellidos <span class="text-danger d-inline">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="empleado.apellido" name="apellido" placeholder="Ej. Pérez" required>
+        </div>
+      </div>
+
+      <!--Usuario y Contraseña -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-6">
+          <label class="form-label">Usuario <span class="text-danger d-inline">*</span></label>
+          <div class="input-group">
+             <input type="text" class="form-control rounded-3" [(ngModel)]="empleado.usuarioLogin" name="usuarioLogin" placeholder="Usuario de acceso" required>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">
+            Contraseña 
+            <span *ngIf="!empleado.idEmpleado" class="text-danger d-inline">*</span>
+            <span *ngIf="empleado.idEmpleado" class="text-muted small fw-normal">(Opcional al editar)</span>
+          </label>
+          
+          <div class="input-group">
+            <input 
+              [type]="ocultarPassword ? 'password' : 'text'" 
+              class="form-control"
+              placeholder="••••••••"
+              [(ngModel)]="empleado.contrasenaHash" 
+              name="contrasenaHash" 
+              #passInput="ngModel"
+              [required]="!empleado.idEmpleado"
+              minlength="8"
+              pattern="(?=.*\d)(?=.*[\W_]).{8,}"
+              [class.is-invalid]="passInput.invalid && (passInput.dirty || passInput.touched)">
+            
+            <button 
+              class="input-group-text" 
+              type="button" 
+              style="cursor: pointer;"
+              (click)="ocultarPassword = !ocultarPassword"
+              tabindex="-1">
+              <i class="bi" [class.bi-eye-slash]="ocultarPassword" [class.bi-eye]="!ocultarPassword"></i>
+            </button>
+          </div>
+
+          <!-- Mensajes de error de contraseña-->
+          <div *ngIf="passInput.invalid && (passInput.dirty || passInput.touched)" class="mt-1">
+            <small *ngIf="passInput.errors?.['required']" class="text-danger">
+              <i class="bi bi-exclamation-circle"></i> La contraseña es obligatoria.
+            </small>
+            <small *ngIf="passInput.errors?.['minlength']" class="text-danger">
+              <i class="bi bi-exclamation-circle"></i> Mínimo 8 caracteres.
+            </small>
+            <small *ngIf="passInput.errors?.['pattern']" class="text-danger">
+              <i class="bi bi-exclamation-circle"></i> Requiere número y símbolo.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cargo y Estado -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-6">
+          <label class="form-label">Cargo</label>
+          <select class="form-select" 
+                  [(ngModel)]="empleado.rol" 
+                  name="rol" 
+                  [compareWith]="compararRoles"
+                  [disabled]="empleado.rol?.nombreRol === 'Administrador' || empleado.rol?.nombreRol === 'Sistema'">
+            <option [ngValue]="null" disabled>Seleccione un cargo</option>
+            <option *ngFor="let r of roles" [ngValue]="r">{{ r.nombreRol }}</option>
+          </select>
+        </div>
+        
+        <div class="col-md-6">
+          <label class="form-label">Estado</label>
+          <select class="form-select" 
+                  [(ngModel)]="empleado.estado" 
+                  name="estado"
+                  [compareWith]="compararEstados">
+            <option [ngValue]="null" disabled>Seleccione estado</option>
+            <option *ngFor="let e of estados" [ngValue]="e">{{ e.nombreEstadoEmpleado }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Botones de Accion -->
+      <div class="d-flex justify-content-end gap-2 mt-5">
+        <button type="button" class="btn btn-secondary" (click)="cancelar()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-save" [disabled]="isSaving">
+          <span *ngIf="!isSaving">{{ empleado.idEmpleado ? 'Guardar Cambios' : 'Crear Empleado' }}</span>
+          <span *ngIf="isSaving">Guardando...</span>
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

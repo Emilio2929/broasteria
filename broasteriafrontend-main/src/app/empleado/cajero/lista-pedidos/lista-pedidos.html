@@ -1,0 +1,174 @@
+<div class="d-flex" style="height: 100vh; overflow: hidden;">
+  
+  <div class="bg-dark text-white p-3 d-flex flex-column" style="width: 250px;">
+    <h5 class="fw-bold text-center mb-4">D'licias Fast Food</h5>
+    <ul class="nav flex-column">
+      <li class="nav-item mb-2" (click)="ListaPedidos($event)">
+        <a href="#" class="nav-link text-white fw-semibold">
+          <i class="bi bi-list me-2"></i> Lista de Pedidos
+        </a>
+      </li>
+      <li class="nav-item mb-2" (click)="Facturar($event)">
+        <a href="#" class="nav-link text-white fw-semibold">
+          <i class="bi bi-receipt me-2"></i> Facturar
+        </a>
+      </li>
+      <li class="nav-item mt-auto">
+        <a href="#" class="nav-link text-white fw-bold" (click)="CerrarSesion($event)">
+          <i class="bi bi-power me-2"></i> Cerrar Sesión
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="flex-grow-1 bg-light p-4 overflow-auto">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="d-flex align-items-center">
+        <img src="logo.png" alt="Logo" width="100" class="me-3">
+        <div>
+          <h3 class="fw-bold text-dark m-0">Monitor de Pedidos</h3>
+        </div>
+      </div>
+      
+      <button class="btn btn-outline-secondary" (click)="cargarPedidos()">
+        <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
+      </button>
+    </div>
+
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-0"> 
+        
+        <div class="table-responsive">
+          <table class="table table-hover  align-middle text-center mb-0">
+            <thead class="table-dark text-uppercase small">
+              <tr>
+                <th class="py-3">N° Orden</th>
+                <th class="py-3">Cliente</th>
+                <th class="py-3">Fecha y Hora</th>
+                <th class="py-3">Total</th>
+                <th class="py-3">Estado</th>
+                <th class="py-3">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr *ngIf="isLoading">
+                  <td colspan="6" class="py-5">
+                      <div class="spinner-border text-warning" role="status"></div>
+                      <p class="mt-2 text-muted small">Sincronizando pedidos...</p>
+                  </td>
+              </tr>
+
+              <tr *ngIf="!isLoading && pedidos.length === 0">
+                  <td colspan="6" class="py-5 text-muted">
+                    <i class="bi bi-inbox display-6 d-block mb-2 opacity-25"></i>
+                    No hay pedidos registrados hoy.
+                  </td>
+              </tr>
+
+              <ng-container *ngIf="!isLoading && pedidos.length > 0">
+                <tr *ngFor="let p of pedidos" [class.table-warning]="p.estado?.id === 3">
+                  
+                  <td class="fw-bold fs-5 text-secondary">#{{ p.id }}</td>
+                  
+                  <td class="fw-semibold ps-4">
+                    {{ p.cliente?.nombre || 'Cliente Local' }}
+                  </td>
+                  
+                  <td class="text-muted small">
+                      {{ p.fechaPedido | date:'dd/MM/yyyy h:mm a' }}
+                  </td>
+                  
+                  <td class="fw-semibold text-dark fs-6">S/. {{ p.totalPedido | number:'1.2-2' }}</td>
+                  
+                  <td>
+                    <span class="badge rounded-pill px-3 py-2"
+                      [ngClass]="{
+                        'bg-secondary text-white': p.estado?.id === 1,
+                        'bg-primary text-white': p.estado?.id === 2,
+                        'bg-warning text-dark': p.estado?.id === 3,
+                        'bg-danger text-white': p.estado?.id === 4,
+                        'bg-success text-white': p.estado?.id === 5,
+                        'bg-info text-white': p.estado?.id === 6
+                      }">
+                      {{ p.estado?.nombre | uppercase }}
+                    </span>
+                  </td>
+
+                  <td>
+                    <ng-container *ngIf="p.estado?.id === 3">
+                        
+                        <button *ngIf="esLocal(p)" 
+                                class="btn btn-success btn-sm text-white fw-bold"
+                                (click)="irACobrar(p.id)"><i class="fa-solid fa-coins me-1"></i> COBRAR
+                        </button>
+
+                    </ng-container>
+
+                    <span *ngIf="p.estado?.id === 5" class="text-success fw-bold small">
+                        <i class="bi bi-check-circle-fill me-1"></i> ENTREGADO
+                    </span>
+                    <span *ngIf="p.estado?.id === 4" class="text-danger fw-bold small">
+                        <i class="bi bi-x-circle-fill me-1"></i> CANCELADO
+                    </span>
+                    <span *ngIf="p.estado?.id === 1 || p.estado?.id === 2" class="text-muted small fst-italic">
+                        ... En cocina
+                    </span>
+                  </td>
+
+                </tr>
+              </ng-container>
+
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INTELIGENTE (DISEÑO DINÁMICO) -->
+<div class="custom-modal-backdrop" *ngIf="mostrarModal"></div>
+<div class="custom-modal" *ngIf="mostrarModal">
+  <div class="custom-modal-content">
+    
+    <div class="modal-header-custom">
+      <i class="bi bi-exclamation-triangle-fill text-warning" 
+         *ngIf="modalAccion === 'cerrarSesion'"></i>
+
+      <i class="bi bi-cash-coin text-success" 
+         *ngIf="modalAccion === 'confirmarPago'"></i>
+
+      <i class="bi bi-box-seam-fill text-primary" 
+         *ngIf="modalAccion === 'entregarPedido'"></i>
+      
+      <h5 class="modal-title-custom">{{ modalTitulo }}</h5>
+    </div>
+    
+    <div class="modal-body-custom">
+      <p>{{ modalMensaje }}</p>
+    </div>
+    
+    <div class="modal-footer-custom">
+      <button class="btn fw-bold px-3 me-2"
+              [ngClass]="{
+                'btn-warning': modalAccion === 'cerrarSesion',
+                'btn-success': modalAccion === 'confirmarPago',
+                'btn-primary': modalAccion === 'entregarPedido'
+              }"
+              (click)="ejecutarAccion()">
+        <span *ngIf="modalAccion === 'cerrarSesion'">Sí, Cerrar Sesión</span>
+        <span *ngIf="modalAccion === 'confirmarPago'">Sí, Confirmar Pago</span>
+        <span *ngIf="modalAccion === 'entregarPedido'">Sí, Entregar</span>
+      </button>
+      
+      <button class="btn btn-secondary px-3"
+              (click)="cerrarModal()">
+        Cancelar
+      </button>
+    </div>
+
+  </div>
+</div>

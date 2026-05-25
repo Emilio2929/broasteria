@@ -1,0 +1,184 @@
+<button 
+  class="menu-btn d-md-none"
+  *ngIf="!sidebarAbierto"
+  (click)="toggleSidebar()">
+  <i class="bi bi-list fs-3"></i>
+</button>
+
+<div *ngIf="sidebarAbierto && isMobile"
+     class="overlay-mobile"
+     (click)="toggleSidebar()">
+</div>
+
+<div class="d-flex" style="height: 100vh; overflow: hidden; position: relative;">
+  <div class="sidebar-delivery bg-dark text-white p-3 d-flex flex-column"
+       [class.sidebar-open]="sidebarAbierto"
+       [class.sidebar-closed]="!sidebarAbierto && isMobile">
+
+    <button class="close-btn d-md-none" *ngIf="sidebarAbierto" (click)="toggleSidebar()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+
+    <h5 class="fw-bold text-center mb-4 mt-4">D'licias Fast Food</h5>
+
+    <ul class="nav flex-column">
+      <li class="nav-item mb-2" (click)="CargarPedidos($event)">
+        <a class="nav-link text-white fw-semibold">
+          <i class="bi bi-truck me-2"></i> Mis Entregas
+        </a>
+      </li>
+
+      <li class="nav-item mt-auto" (click)="CerrarSesion($event)">
+        <a class="nav-link text-white fw-semibold">
+          <i class="bi bi-power me-2"></i> Cerrar Sesión
+        </a>
+      </li>
+    </ul>
+  </div>
+
+    <div class="flex-grow-1 bg-light p-3 overflow-auto">
+    <div class="header-delivery d-flex justify-content-start align-items-center mb-3 gap-3">
+      <img src="logo.png" alt="Logo" width="100" class="logo-delivery">
+      <h4 class="fw-semibold d-none d-md-block">Entrega de Pedidos</h4>
+    </div>
+
+    <h5 class="fw-semibold mb-3">Pedidos para entregar</h5>
+
+    <div *ngIf="cargando" class="text-center py-5">
+      <div class="spinner-border text-warning"></div>
+      <p class="mt-2 text-muted">Cargando pedidos...</p>
+    </div>
+
+    <div *ngIf="!cargando && pedidos.length === 0" class="text-center text-muted py-4">
+      <i class="bi bi-inboxes fs-1"></i>
+      <p>No hay pedidos disponibles.</p>
+    </div>
+
+    <div class="pedido-card shadow-sm" *ngFor="let ped of pedidos">
+
+      <div class="pedido-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold">#{{ ped.numeroPedidoCliente }}</h5>
+
+        <span class="badge rounded-pill px-3 py-2"
+              [ngClass]="{
+                'bg-warning text-black': ped.estado.id === 3,
+                'bg-info text-white': ped.estado.id === 6,
+                'bg-success text-white': ped.estado.id === 5
+              }">
+          {{ ped.estado.nombre | uppercase }}
+        </span>
+      </div>
+
+      <div class="pedido-body mt-2">
+        <p><strong>Cliente:</strong> {{ ped.cliente.nombre }} {{ ped.cliente.apellido }}</p>
+        <p><strong>Dirección:</strong> {{ ped.direccionEntrega }}</p>
+        <p *ngIf="ped.referenciaEntrega">
+            <strong>Referencia:</strong> {{ ped.referenciaEntrega }}
+        </p>
+        <p><strong>Total:</strong> S/ {{ ped.totalPedido }}</p>
+
+        <div>
+          <p *ngFor="let det of ped.detalles" class="mb-1 small">
+            • <strong>{{ det.producto.nombre }}</strong> (x{{ det.cantidad }})
+          </p>
+        </div>
+
+        <div class="mt-2">
+          <strong>Método de Pago:</strong>
+
+          <span *ngIf="ped.pagos?.length > 0 && ped.pagos[0].tipoPago.id === 1"
+                class="badge bg-warning text-dark px-3 py-2 ms-2 rounded-pill">
+            <i class="bi bi-cash-coin me-1"></i> Contraentrega
+          </span>
+
+          <span *ngIf="ped.pagos?.length > 0 && ped.pagos[0].tipoPago.id !== 1"
+                class="badge bg-warning text-dark px-3 py-2 ms-2 rounded-pill">
+            <i class="bi bi-credit-card me-1"></i> Pagado Web
+          </span>
+
+          <span *ngIf="!ped.pagos || ped.pagos.length === 0"
+                class="badge bg-secondary text-white px-3 py-2 ms-2 rounded-pill">
+            <i class="bi bi-exclamation-circle me-1"></i> Sin registro
+          </span>
+        </div>
+      </div>
+
+      <div class="pedido-actions mt-3">
+
+                <button *ngIf="ped.estado.id === 3"
+                class="btn btn-info text-white w-100 mb-2 py-2 fw-semibold"
+                (click)="enCamino(ped.id)">
+          En Camino
+        </button>
+
+                <button *ngIf="ped.estado.id === 6"
+                class="btn btn-success w-100 py-2 fw-semibold"
+                (click)="abrirModalDocumento(ped)">
+          Completado
+        </button>
+
+        <button *ngIf="ped.estado.id === 5"
+                class="btn btn-success w-100 py-2 fw-semibold"
+                disabled>
+          Entregado
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container-custom">
+  <div *ngFor="let noti of notificaciones"
+       class="custom-toast bg-dark text-white shadow-lg"
+       [class.closing]="noti.closing"
+       (click)="cerrarNotificacion(noti.id)">
+    <i class="bi bi-bell-fill me-2 text-warning"></i>
+    <span>{{ noti.mensaje }}</span>
+  </div>
+</div>
+
+<div class="modal-backdrop-custom" *ngIf="mostrarModal">
+  <div class="modal-content-custom">
+
+    <h5 class="fw-bold mb-3">Validar Documento</h5>
+
+    <label class="fw-semibold mb-1">Ingrese DNI o CE del cliente</label>
+    <input type="text"
+           maxlength="12"
+           class="form-control mb-3"
+           [(ngModel)]="documentoIngresado">
+
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <button class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+
+      <button class="btn btn-success" (click)="confirmarDocumento()">
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop-custom" *ngIf="isModalVisible">
+  <div class="modal-content-custom modal-message-content">
+
+    <div class="text-center mb-3">
+      <i class="modal-icon-custom"
+         [ngClass]="{
+           'bi-check-circle-fill text-success': modalIcono === 'success',
+           'bi-x-circle-fill text-danger': modalIcono === 'error',
+           'bi-exclamation-triangle-fill text-warning': modalIcono === 'warning'
+         }">
+      </i>
+    </div>
+
+    <h5 class="fw-bold text-center mb-2">{{ modalTitulo }}</h5>
+    <p class="text-center text-muted mb-4">{{ modalMensaje }}</p>
+
+    <div class="d-flex justify-content-center">
+      <button class="btn btn-primary" (click)="cerrarModalMensaje()">
+        Aceptar
+      </button>
+    </div>
+  </div>
+</div>

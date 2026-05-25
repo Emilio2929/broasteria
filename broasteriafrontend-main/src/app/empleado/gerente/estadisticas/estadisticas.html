@@ -1,0 +1,184 @@
+<div class="d-flex" style="height: 100vh; overflow: hidden;">
+  <!-- SIDEBAR -->
+  <div class="bg-dark text-white p-3 d-flex flex-column" style="width: 250px;">
+    <h5 class="fw-bold text-center mb-4">D'licias Fast Food</h5>
+    <ul class="nav flex-column">
+      <li class="nav-item mb-2" (click)="estadistica($event)">
+        <a href="#" class="nav-link text-white fw-semibold" >
+          <i class="bi bi-graph-up me-2" ></i> Gráfica de Ganancias
+        </a>
+      </li>
+      <li class="nav-item mb-2" (click)="empleados($event)">
+        <a href="#" class="nav-link text-white fw-semibold" >
+          <i class="bi bi-people-fill me-2" ></i> Empleados
+        </a>
+      </li>
+      <li class="nav-item mb-2" (click)="inventario($event)">
+        <a href="#" class="nav-link text-white fw-semibold" >
+          <i class="bi bi-box-seam me-2" ></i> Inventario
+        </a>
+      </li>
+      <li class="nav-item mt-auto" (click)="CerrarSesion($event)">
+        <a href="#" class="nav-link text-white fw-semibold" >
+          <i class="bi bi-power me-2" ></i> Cerrar Sesión
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="flex-grow-1 bg-light p-4 overflow-auto">
+    <h3 class="fw-bold mb-4">Gráfica de Ganancias</h3>
+    <div class="mb-3 d-flex gap-3">
+
+      <!-- Prueba Calendario -->
+      <div class="d-flex gap-3 align-items-center ">
+        <label class="form-label fw-bold">Inicio:</label>
+        <input id="datepickerInicio" type="text" class="form-control" [(ngModel)]="fechaInicioSeleccionada">
+      </div>
+      <div class="d-flex gap-3 align-items-center">
+        <label class="form-label fw-bold">Fin:</label>
+        <input id="datepickerFin" type="text" class="form-control" [(ngModel)]="fechaFinSeleccionada">
+      </div>
+    </div>
+    <!-- INGRESOS -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header bg-primary text-white fw-bold">
+        Ingresos
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <h6 class="fw-bold">Productos 
+              <button class="btn btn-sm btn-primary" type="button" (click)="CambioOrdenMV()">
+                {{ mostrarMasVendidos ? 'más' : 'menos' }}
+              </button>
+            Vendidos</h6>
+            <div class="border rounded bg-white p-3 text-center" id="graficoCircular" style="height: 400px;">
+            </div>
+          </div>
+
+          <!-- GRAFICO DE BARRAS -->
+          <div class="col-md-6 mb-4">
+            <h6 class="fw-bold mb-3">Ventas por Producto</h6>
+            <div class="border rounded bg-white p-3 text-center">
+              <canvas id="graficoBarras" height="370px"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COSTOS OPERATIVOS -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-primary text-white fw-bold">
+        Ganancias
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover text-center">
+            <thead class="table-primary">
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="tablaPedidos">
+            </tbody>
+            <tfoot class="fw-bold">
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  <!-- Comparación Mensual de Ventas -->
+<div class="card shadow-sm mb-4" (click)="$event.stopPropagation()">
+
+  <div class="card-header bg-primary text-white fw-bold">
+    Comparación de Ganancias por Mes
+  </div>
+
+  <div class="card-body">
+
+    <div class="row g-3 align-items-end text-center justify-content-center">
+
+      <!-- Bloque Mes/Año 1 -->
+      <div class="col-md-2">
+        <label class="form-label fw-bold">Mes 1</label>
+        <select style="border-color: #4A64F5; box-shadow: 0 0 5px #4A64F5;" class="form-select" [(ngModel)]="mes1">
+          <option *ngFor="let m of mesesdisponibles" [value]="m.valor">{{ m.nombre }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-2">
+        <label class="form-label fw-bold">Año 1</label>
+        <select style="border-color: #4A64F5; box-shadow: 0 0 5px #4A64F5;" class="form-select" [(ngModel)]="anio1">
+          <option *ngFor="let a of aniosdisponibles" [value]="a">{{ a }}</option>
+        </select>
+      </div>
+
+      <!-- Botón -->
+      <div class="col-md-2">
+        <button class="btn btn-primary w-100 fw-bold" type="button" (click)="cargarComparacion()">
+          Comparar
+        </button>
+      </div>
+
+      <!-- Bloque Mes/Año 2 -->
+      <div class="col-md-2">
+        <label class="form-label fw-bold">Mes 2</label>
+        <select style="border-color: #ccff66; box-shadow: 0 0 5px #ccff66;" class="form-select" [(ngModel)]="mes2">
+          <option *ngFor="let m of mesesdisponibles" [value]="m.valor">{{ m.nombre }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-2">
+        <label class="form-label fw-bold">Año 2</label>
+        <select style="border-color: #ccff66; box-shadow: 0 0 5px #ccff66;" class="form-select" [(ngModel)]="anio2">
+          <option *ngFor="let a of aniosdisponibles" [value]="a">{{ a }}</option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- GRÁFICO -->
+    <div class="border rounded bg-white mt-4"
+         id="graficoComparacion"
+         style="width: 100%; height: 400px;">
+    </div>
+
+  </div>
+</div>
+
+
+<div class="custom-modal-backdrop" *ngIf="mostrarModal"></div>
+<div class="custom-modal" *ngIf="mostrarModal">
+  <div class="custom-modal-content">
+
+    <div class="modal-header-custom">
+      <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+      <h5 class="modal-title-custom">{{ modalTitulo }}</h5>
+    </div>
+
+    <div class="modal-body-custom">
+      <p>{{ modalMensaje }}</p>
+    </div>
+
+    <div class="modal-footer-custom">
+      <button class="btn btn-warning fw-bold px-3 me-2"
+              *ngIf="modalTipo === 'confirm'"
+              (click)="ejecutarAccion()">
+        Sí, Cerrar Sesión
+      </button>
+
+      <button class="btn btn-secondary px-3"
+              (click)="cerrarModal()">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>
+  </div>
+</div>

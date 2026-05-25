@@ -1,0 +1,255 @@
+<div class="d-flex" style="height: 100vh; overflow: hidden;">
+  <div class="bg-dark text-white p-3 d-flex flex-column" style="width: 260px;">
+    <h5 class="fw-bold text-center mb-4">D'licias Fast Food</h5>
+    <ul class="nav flex-column">
+      <li class="nav-item mb-2" (click)="estadistica($event)">
+        <a href="#" class="nav-link text-white fw-semibold">
+          <i class="bi bi-graph-up me-2"></i> Gráfica de Ganancias
+        </a>
+      </li>
+      <li class="nav-item mb-2" (click)="empleados($event)">
+        <a href="#" class="nav-link text-white fw-semibold">
+          <i class="bi bi-people-fill me-2"></i> Empleados
+        </a>
+      </li>
+      <li class="nav-item mb-2" (click)="inventario($event)">
+        <a href="#" class="nav-link text-white fw-semibold">
+          <i class="bi bi-box-seam me-2"></i> Inventario
+        </a>
+      </li>
+      <li class="nav-item mt-auto" (click)="CerrarSesion($event)">
+        <a href="#" class="nav-link text-white fw-semibold">
+          <i class="bi bi-power me-2"></i> Cerrar Sesión
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="flex-grow-1 bg-light p-4 overflow-auto">
+    <div class="d-flex align-items-center">
+      <img src="logo.png" alt="Logo" width="100" class="me-3">
+      <div>
+        <h3 class="fw-bold text-dark m-0">Administración de Empleados</h3>
+      </div>
+    </div>
+
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header text-white fw-bold">
+        LISTA ACTUAL DE EMPLEADOS
+      </div>
+
+      <div class="card-body p-0">
+        <table class="table table-bordered table-hover mb-0 text-center align-middle">
+          <thead>
+            <tr>
+              <th>N°</th>
+              <th>Nombres y Apellidos</th>
+              <th>Usuario</th>
+              <th>Contraseña</th>
+              <th>Cargo</th>
+              <th>Estado</th>
+              <th>Opción</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let emp of empleaditos; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ emp.nombre }} {{ emp.apellido }}</td>
+              <td>{{ emp.usuarioLogin }}</td>
+              <td>********</td>
+              <td>{{ emp.rol?.nombreRol }}</td>
+
+              <td>
+                <span class="badge bg-success rounded-pill px-3 py-2"
+                      *ngIf="emp.estado?.nombreEstadoEmpleado === 'Activo'">
+                  {{ emp.estado?.nombreEstadoEmpleado }}
+                </span>
+                <span class="badge bg-secondary rounded-pill px-3 py-2"
+                      *ngIf="emp.estado?.nombreEstadoEmpleado !== 'Activo'">
+                  {{ emp.estado?.nombreEstadoEmpleado }}
+                </span>
+              </td>
+
+              <td>
+                <button class="btn btn-info btn-sm text-white me-1" (click)="editarEmpleado(emp)">
+                  <i class="bi bi-pencil-square"></i> Editar
+                </button>
+                <button class="btn btn-danger btn-sm text-white" [disabled]="emp.usuarioLogin ===  'ChefPrincipal'" (click)="eliminarEmpleado(emp.idEmpleado)">
+                  <i class="bi bi-trash"></i> Eliminar
+                </button>
+              </td>
+            </tr>
+
+            <tr *ngIf="empleaditos.length === 0">
+              <td colspan="7">No hay empleados registrados.</td> </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header bg-success text-white fw-bold">
+        REGISTRAR NUEVO EMPLEADO
+      </div>
+
+      <div class="card-body">
+        <div class="row g-3 align-items-center">
+
+          <div class="col-md-3">
+            <input type="text" class="form-control" placeholder="Nombres" [(ngModel)]="nuevoEmpleado.nombre" name="nNombre">
+          </div>
+          <div class="col-md-3">
+            <input type="text" class="form-control" placeholder="Apellidos" [(ngModel)]="nuevoEmpleado.apellido" name="nApellido">
+          </div>
+          <div class="col-md-3">
+            <input type="text" class="form-control" placeholder="Usuario" [(ngModel)]="nuevoEmpleado.usuarioLogin" name="nUsuario">
+          </div>
+
+          <div class="col-md-3">
+            <div class="input-group">
+              <input 
+                [type]="ocultarPassword ? 'password' : 'text'" 
+                class="form-control border-end-0" 
+                placeholder="Contraseña" 
+                [(ngModel)]="nuevoEmpleado.contrasenaHash" 
+                name="nContrasena"
+                #passInput="ngModel"
+                required
+                minlength="8"
+                pattern="(?=.*\d)(?=.*[\W_]).{8,}"
+                [class.is-invalid]="passInput.invalid && (passInput.dirty || passInput.touched)">
+              
+              <button 
+                class="input-group-text bg-white border-start-0" 
+                type="button"
+                style="cursor: pointer;"
+                (click)="ocultarPassword = !ocultarPassword">
+                <i class="bi" [class.bi-eye-slash]="ocultarPassword" [class.bi-eye]="!ocultarPassword"></i>
+              </button>
+
+              <div *ngIf="passInput.invalid && (passInput.dirty || passInput.touched) && !passInput.errors?.['required']" 
+                class="invalid-feedback position-absolute bg-white border rounded p-2 shadow-sm" 
+                style="top: 100%; z-index: 10; width: 100%;">
+              
+                <small *ngIf="passInput.errors?.['minlength']" class="d-block text-danger">
+                  • Mínimo 8 caracteres.
+                </small>
+                <small *ngIf="passInput.errors?.['pattern']" class="d-block text-danger">
+                  • Requiere 1 número y 1 símbolo.
+                </small>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <select class="form-select" [(ngModel)]="nuevoEmpleado.rol" name="nRol">
+              <option [ngValue]="null" disabled>Cargo</option>
+              <option *ngFor="let r of roles" [ngValue]="r">{{ r.nombreRol }}</option>
+            </select>
+          </div>
+
+          <div class="col-md-2 text-start">
+            <button class="btn btn-add text-white fw-bold px-3" (click)="crearEmpleado()">
+              <i class="bi bi-plus-lg me-1"></i> AGREGAR
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    
+    <div class="custom-modal-backdrop" *ngIf="mostrarModal"></div>
+    <div class="custom-modal" *ngIf="mostrarModal">
+      <div class="custom-modal-content">
+
+        <div class="modal-header-custom">
+          <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+          <h5 class="modal-title-custom">{{ modalTitulo }}</h5>
+        </div>
+
+        <div class="modal-body-custom">
+          <p>{{ modalMensaje }}</p>
+        </div>
+
+        <div class="modal-footer-custom">
+          
+          <ng-container *ngIf="modalTipo === 'confirm'">
+            <button class="btn btn-warning fw-bold px-3 me-2" (click)="ejecutarAccion()">
+              Sí, Continuar
+            </button>
+            <button class="btn btn-secondary px-3" (click)="cerrarModal()">
+              Cancelar
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="modalTipo === 'error' || modalTipo === 'success'">
+            <button class="btn btn-dark px-4" (click)="cerrarModal()">
+              Entendido
+            </button>
+          </ng-container>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="custom-modal-backdrop" *ngIf="mostrarModalAdmin"></div>
+    <div class="custom-modal" *ngIf="mostrarModalAdmin">
+      <div class="custom-modal-content">
+
+        <div class="modal-header-custom bg-success text-white">
+          <i class="bi bi-shield-lock-fill me-2"></i>
+          <h5 class="modal-title-custom">Validación de Administrador</h5>
+        </div>
+
+        <div class="modal-body-custom mt-3">
+          <p>Por favor ingrese la contraseña del administrador para continuar.</p>
+          <div class="input-group mt-2">
+            <input 
+              [type]="ocultarPasswordAdmin ? 'password' : 'text'"
+              class="form-control border-end-0"
+              placeholder="Contraseña"
+              [(ngModel)]="adminPasswordInput" />
+            
+            <button 
+              class="input-group-text bg-white border-start-0" 
+              type="button"
+              style="cursor: pointer;"
+              (click)="ocultarPasswordAdmin = !ocultarPasswordAdmin">
+              <i class="bi" [class.bi-eye-slash]="ocultarPasswordAdmin" [class.bi-eye]="!ocultarPasswordAdmin"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-footer-custom">
+          <button class="btn btn-secondary px-3 me-2" (click)="mostrarModalAdmin = false">
+            Cancelar
+          </button>
+          <button class="btn btn-success px-4" (click)="validarAdminYEditar()">
+            Validar
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-custom" *ngIf="mostrarToast" 
+      [ngClass]="{
+       'toast-success': toastTipo === 'success', 
+       'toast-error': toastTipo === 'error',
+       'toast-closing': closingToast
+      }">
+  <div class="toast-icon">
+    <i class="bi" [class.bi-check-circle-fill]="toastTipo === 'success'" [class.bi-x-circle-fill]="toastTipo === 'error'"></i>
+  </div>
+  <div class="toast-body">
+    <span class="toast-title">{{ toastTitulo }}</span>
+    <span class="toast-message">{{ toastMensaje }}</span>
+  </div>
+  <button class="toast-close" (click)="cerrarToast()">
+    <i class="bi bi-x"></i>
+  </button>
+</div>
+</div>

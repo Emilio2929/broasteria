@@ -1,0 +1,58 @@
+<div class="staff-wrapper">
+  
+  <div class="orange-wave"></div>
+
+  <div class="login-card-staff animate-in">
+    
+    <div class="card-top-accent"></div>
+    
+    <div *ngIf="!cambioExitoso">
+        <h2 class="brand-title" style="font-size: 1.8rem; margin-bottom: 2rem;">NUEVA CONTRASEÑA</h2>
+        
+        <form (ngSubmit)="cambiarPassword()">
+            
+            <div class="mb-3 text-start">
+                <label class="form-label fw-bold" style="color: #444; font-size: 0.9rem;">Nueva Contraseña</label>
+                <div class="input-group input-group-staff">
+                    <input [type]="mostrarPass1 ? 'text' : 'password'" class="form-control" 
+                           [(ngModel)]="nuevaContrasena" name="nuevaContrasena" required placeholder="******">
+                    <span class="input-group-text staff-addon" (click)="mostrarPass1 = !mostrarPass1">
+                        <i class="bi" [ngClass]="mostrarPass1 ? 'bi-eye-slash' : 'bi-eye'"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="mb-4 text-start">
+                <label class="form-label fw-bold" style="color: #444; font-size: 0.9rem;">Confirmar Contraseña</label>
+                <div class="input-group input-group-staff">
+                    <input [type]="mostrarPass2 ? 'text' : 'password'" class="form-control" 
+                           [(ngModel)]="confirmarContrasena" name="confirmarContrasena" required placeholder="******">
+                    <span class="input-group-text staff-addon" (click)="mostrarPass2 = !mostrarPass2">
+                        <i class="bi" [ngClass]="mostrarPass2 ? 'bi-eye-slash' : 'bi-eye'"></i>
+                    </span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-staff" [disabled]="cargando || nuevaContrasena.length < 8 || nuevaContrasena !== confirmarContrasena">
+                <span *ngIf="!cargando">CAMBIAR CONTRASEÑA</span>
+                <span *ngIf="cargando"><i class="bi bi-hourglass-split"></i> Actualizando...</span>
+            </button>
+            
+        </form>
+    </div>
+
+    <div *ngIf="cambioExitoso" class="success-modal-content">
+        <div class="check-circle animate__checkmark">
+            <i class="bi bi-check2-circle"></i>
+        </div>
+        <h2 class="brand-title success-title">¡Contraseña Actualizada!</h2>
+        <p class="success-subtitle">Tu nueva contraseña ha sido guardada exitosamente</p>
+        
+        <button type="button" class="btn-staff mt-4" (click)="redirigir()">
+            IR A INICIO
+        </button>
+    </div>
+
+  </div> </div> <div *ngIf="mensajeError" class="toast-simple error animate-toast">
+  <i class="bi bi-x-circle-fill"></i> {{ mensajeError }}
+</div>

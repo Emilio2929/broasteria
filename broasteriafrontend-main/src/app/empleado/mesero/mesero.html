@@ -1,0 +1,189 @@
+<div class="d-flex" style="height: 100vh; overflow: hidden;">
+
+  <!-- BLOQUE DE NOTIFICACION-->
+
+<div class="notification-container-fixed">
+  <div *ngFor="let noti of notificaciones" 
+       class="notification-toast"
+       [class.closing]="noti.closing">
+
+    <div class="d-flex align-items-center justify-content-between w-100">
+      <span class="d-flex align-items-center">
+        <i class="bi bi-bell-fill me-3 fs-3"></i> 
+        <span class="fs-6">{{ noti.mensaje }}</span>
+      </span>
+      <!-- Boton cerrar -->
+      <button type="button" class="btn-close ms-3" (click)="cerrarNotificacion(noti.id)"></button>
+    </div>
+  </div>
+</div>
+
+  <div class="bg-dark text-white p-3 d-flex flex-column" style="width: 250px;">
+    <h5 class="fw-bold text-center mb-4">D'licias Fast Food</h5>
+    <ul class="nav flex-column">
+      <li class="nav-item mb-2" (click)="ListPedidos($event)">
+        <a href="#" class="nav-link text-white fw-semibold">
+          <i class="bi bi-list me-2"></i> Lista de Pedidos
+        </a>
+      </li>
+      <li class="nav-item mb-2" (click)="RegisPedidoObli($event)">
+        <a href="#" class="nav-link text-white fw-semibold">
+          <i class="bi bi-plus-square me-2"></i> Generar Pedido
+        </a>
+      </li>
+      <li class="nav-item mt-auto" (click)="CerrarSesion($event)">
+        <a href="#" class="nav-link text-white fw-semibold">
+          <i class="bi bi-power me-2"></i> Cerrar Sesión
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="flex-grow-1 bg-light p-4 overflow-auto">
+    
+    <div class="d-flex justify-content-start align-items-center mb-4">
+      <img src="logo.png" alt="Logo" width="100" class="me-3">
+      
+      <div class="input-group" style="max-width: 400px;">
+          <input type="number" class="form-control" placeholder="Buscar pedido..." [(ngModel)]="idPedidoBuscar">
+          <button class="btn btn-primary" style="background-color: rgb(238, 186, 43); border:none;" (click)="buscarPedido()">
+            <i class="bi bi-search"></i>
+          </button>
+          <button class="btn btn-danger" *ngIf="idPedidoBuscar" (click)="cancelarBusqueda()" title="Borrar búsqueda">
+            <i class="bi bi-x-lg"></i>
+          </button>
+      </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h4 class="mb-4 fw-semibold">Lista de pedidos</h4>
+        
+        <div class="mb-3">
+            <button class="btn btn-outline-dark me-2" (click)="RegresarOrden()">
+              <i [ngClass]="ordenInvertido ? 'bi bi-sort-up' : 'bi bi-sort-down'"></i>
+              {{ ordenInvertido ? 'Normal' : 'Invertido' }}
+            </button>
+            
+            <button class="btn btn-success me-2" (click)="RegisPedido()">
+              <i class="bi bi-plus-square me-1"></i> Nuevo pedido
+            </button>
+
+            <button class="btn btn-secondary me-2" (click)="limpiarListos()" title="Ocultar todos los pedidos completados">
+               <i class="bi bi-check-all me-1"></i> Ocultar Listos
+            </button>
+
+            <button class="btn btn-warning text-black" (click)="verTodos()">
+                <i class="bi bi-eye me-1"></i> Ver todos
+            </button>
+        </div>
+
+        <audio #notificacionAudio src="/assets/notificacionpedidolisto.mp3" preload="auto"></audio>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle text-center mb-0"> 
+            <thead class="table-dark text-uppercase small">
+              <tr>
+                <th class="py-3">N°</th>
+                <th class="py-3">Nombre Cliente</th>
+                <th class="py-3">Fecha y Hora</th>
+                <th class="py-3">Detalles</th>
+                <th class="py-3">Total</th>
+                <th class="py-3">Estado</th>
+                <th class="py-3">Opciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr *ngIf="isLoading">
+                  <td colspan="7" class="text-center py-5">
+                      <div class="spinner-border text-warning" role="status"></div>
+                      <p class="mt-2 text-muted">Cargando pedidos...</p>
+                  </td>
+              </tr>
+
+              <tr *ngIf="!isLoading && pedidosVisuales.length === 0 && pedidosTodos.length > 0">
+                  <td colspan="7" class="text-center text-muted py-4">
+                    <i class="bi bi-eye-slash fs-3"></i><br>
+                    Has ocultado los pedidos.<br>
+                    <a href="#" (click)="$event.preventDefault(); verTodos()" class="fw-bold">Mostrar todos</a>
+                  </td>
+              </tr>
+
+              <tr *ngIf="!isLoading && pedidosTodos.length === 0">
+                  <td colspan="7" class="text-center text-muted py-4">
+                    No hay pedidos registrados.
+                  </td>
+              </tr>
+
+              <ng-container *ngIf="!isLoading && pedidosVisuales.length > 0">
+                <tr *ngFor="let pedido of pedidosVisuales" [class.table-warning]="pedido.estado?.id === 3"> <!-- APLICACIÓN DE table-warning -->
+                  <td class="fw-bold fs-5 text-secondary">#{{ pedido.numeroPedidoCliente || pedido.id }}</td>
+                  <td class="fw-semibold ps-4">{{ pedido.cliente?.nombre || 'Local' }} {{ pedido.cliente?.apellido }}</td>
+                  
+                  <td class="text-muted small">{{ pedido.fechaPedido | date:'dd/MM/yyyy h:mm a' }}</td>
+                  
+                  <td class="text-start small">
+                    <div *ngFor="let det of pedido.detalles">
+                       • <strong>{{ det.producto.nombre }}</strong> (x{{ det.cantidad }})
+                    </div>
+                  </td>
+                  <td class="fw-semibold text-dark fs-6">S/ {{ pedido.totalPedido | number:'1.2-2' }}</td>
+                  <td>
+                    <span class="badge rounded-pill px-3 py-2"
+                      [ngClass]="{
+                        'bg-secondary text-white': pedido.estado?.id === 1,
+                        'bg-primary text-white':   pedido.estado?.id === 2,
+                        'bg-warning text-black':   pedido.estado?.id === 3,
+                        'bg-danger text-white':    pedido.estado?.id === 4,
+                        'bg-success text-white':   pedido.estado?.id === 5 }">
+                      {{ pedido.estado?.nombre | uppercase}}
+                    </span>
+                  </td>
+                  <td>
+                    <button *ngIf="pedido.estado?.id === 3"
+                            class="btn btn-sm btn-limpiar-personalizado" 
+                            (click)="ocultarPedido(pedido.id)"
+                            title="Limpiar de la vista">
+                      <i class="bi bi-eye-slash"></i> Limpiar
+                    </button>
+                    <span *ngIf="pedido.estado?.id !== 3" class="text-muted small">
+                        En proceso...
+                    </span>
+                  </td> 
+                </tr>
+            </ng-container>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="custom-modal-backdrop" *ngIf="mostrarModal"></div>
+<div class="custom-modal" *ngIf="mostrarModal">
+  <div class="custom-modal-content">
+    <div class="modal-header-custom">
+      <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+      <h5 class="modal-title-custom">{{ modalTitulo }}</h5>
+    </div>
+    <div class="modal-body-custom">
+      <p>{{ modalMensaje }}</p>
+    </div>
+    <div class="modal-footer-custom">
+      <button class="btn btn-warning fw-bold px-3 me-2"
+              *ngIf="modalTipo === 'confirm'"
+              (click)="ejecutarAccion()">
+        Sí, Cerrar Sesión
+      </button>
+      <button class="btn btn-secondary px-3"
+              (click)="cerrarModal()">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>

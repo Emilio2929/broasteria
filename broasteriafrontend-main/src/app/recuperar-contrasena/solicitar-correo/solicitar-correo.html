@@ -1,0 +1,57 @@
+<div class="staff-wrapper">
+  
+  <div class="orange-wave"></div>
+
+  <div class="login-card-staff animate-in">
+    
+    <div class="card-top-accent"></div>
+
+    <h2 class="brand-title">RECUPERAR CONTRASEÑA</h2>
+    <p class="login-subtitle">
+      Ingresa tu correo y te enviaremos un código de verificación para restablecer tu cuenta.
+    </p>
+
+    <form (ngSubmit)="enviarCodigo()">
+      
+      <div class="mb-4 text-start">
+        <label class="form-label">CORREO ELECTRÓNICO</label>
+        <div class="custom-input-group">
+          <i class="bi bi-envelope-fill input-icon"></i>
+          <input 
+            type="email" 
+            class="form-control-clean" 
+            [(ngModel)]="correo" 
+            name="correo" 
+            placeholder="ejemplo@correo.com" 
+            required
+            autocomplete="email"
+          >
+        </div>
+      </div>
+
+      <div class="d-flex flex-column">
+        
+        <button type="submit" class="btn-staff" [disabled]="cargando">
+          <span *ngIf="!cargando">ENVIAR CÓDIGO</span>
+          <span *ngIf="cargando"><i class="bi bi-hourglass-split"></i> Enviando...</span>
+        </button>
+
+        <button type="button" class="btn-ghost" (click)="irALogin($event)">
+          <i class="bi bi-arrow-left"></i> Cancelar y volver
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+  <div *ngIf="mensajeError" class="toast-simple error animate-toast">
+    <i class="bi bi-exclamation-circle-fill"></i> {{ mensajeError }}
+  </div>
+  
+  <div *ngIf="mensajeExito" class="toast-simple success animate-toast">
+    <i class="bi bi-check-circle-fill"></i> {{ mensajeExito }}
+  </div>
+
+</div>

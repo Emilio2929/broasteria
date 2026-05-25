@@ -1,0 +1,267 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap');
+
+:host {
+  font-family: 'Poppins', sans-serif;
+  --primary-orange: #FF5E00;
+  --bg-cream: #FFF5EC; 
+}
+
+/* === ESTRUCTURA PRINCIPAL === */
+.main-wrapper {
+  background-color: #fff;
+  overflow-x: hidden;
+  position: relative; 
+}
+
+/* Fondo Naranja Curvo (Hero) */
+.orange-background-shape {
+  position: absolute;
+  top: 0; right: 0;
+  width: 60%;
+  height: 850px;
+  background: linear-gradient(135deg, #FFB347 0%, #FF5E00 100%);
+  border-bottom-left-radius: 100% 30%; 
+  z-index: 0;
+}
+
+/* === NAVBAR === */
+.nav-item {
+  color: #fff; font-weight: 600; text-decoration: none;
+  transition: 0.3s; margin: 0 10px; cursor: pointer;
+}
+.nav-item:hover { color: #ffecec; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+.profile-btn {
+  background: rgba(255,255,255,0.25); color: #fff;
+  width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; cursor: pointer; transition: 0.3s;
+}
+.profile-btn:hover { background: #fff; color: var(--primary-orange); }
+
+/* === HERO SECTION === */
+.hero-section { position: relative; z-index: 2; padding-top: 4rem; }
+.spicy-tag { font-weight: 800; letter-spacing: 2px; color: var(--primary-orange); }
+h1 { color: #222; font-weight: 900; line-height: 1; text-transform: uppercase; }
+
+/* Botón llamativo con animación */
+.btn-hero {
+  background: #222; color: #fff;
+  padding: 15px 40px; border-radius: 50px; font-weight: 700; letter-spacing: 1px;
+  border: none; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+.btn-hero:hover {
+  background: #fff; color: var(--primary-orange);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(255, 94, 0, 0.4);
+}
+
+.hero-burger-img { width: 100%; max-width: 580px; filter: drop-shadow(0 25px 25px rgba(0,0,0,0.25)); }
+.thumb-img {
+  width: 65px; height: 65px; border-radius: 50%; border: 3px solid #fff;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.3s; cursor: pointer;
+}
+.thumb-img:hover { transform: scale(1.2) rotate(10deg); border-color: var(--primary-orange); }
+
+/* Animacion Flotante */
+.floating-anim { animation: float 5s ease-in-out infinite; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+/* PRODUCTOS FONDO*/
+.products-bg {
+  position: relative;
+  background-color: var(--bg-cream);
+  margin-top: 50px;
+  padding-top: 80px;
+  padding-bottom: 80px;
+  border-radius: 60px 60px 0 0; /* Curva arriba */
+  box-shadow: 0 -20px 50px rgba(0,0,0,0.03);
+}
+
+/* Colores por Categoría */
+.cat-broaster { --theme: #FF8C00; }   
+.cat-burger   { --theme: #D90429; }   
+.cat-caldos   { --theme: #0096C7; }   
+.cat-extra    { --theme: #8338EC; }   
+.cat-bebidas  { --theme: #38B000; }   
+
+/* Títulos de Sección */
+.section-header {
+  display: flex; align-items: center; gap: 15px; margin-bottom: 25px;
+}
+.section-header h4 {
+  font-weight: 800; font-size: 2rem; color: #222; margin: 0;
+}
+/* Línea de color al lado del título */
+.section-line {
+  height: 6px; width: 60px; border-radius: 10px;
+  background: var(--theme);
+}
+
+/*TARJETAS LLAMATIVAS*/
+.product-card {
+  background: #fff;
+  border-radius: 25px;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+  border: 2px solid transparent;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  cursor: pointer;
+}
+
+/*La tarjeta sube, brilla el borde y efecto sombra*/
+.product-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  border-color: var(--theme); 
+}
+
+/* Imagen dentro de la tarjeta */
+.img-wrapper img {
+  max-height: 150px;
+  transition: transform 0.4s ease;
+  filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+}
+.product-card:hover .img-wrapper img {
+  transform: scale(1.08); 
+}
+
+/*titulo del productoo*/
+.card-title { font-weight: 700; color: #333; font-size: 1.1rem; margin-top: 10px; }
+
+/*PRECIO*/
+.price-badge {
+  display: inline-block;
+  background: var(--theme); 
+  color: #fff;
+  padding: 5px 20px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin-top: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.desc-text { color: #888; font-size: 0.85rem; font-weight: 500; margin-bottom: 8px; display: block;}
+
+.card-clicked { transform: scale(0.9) !important; }
+
+
+.card-clicked {
+   transform: none !important; 
+    background-color: #f2f2f2 !important; 
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05) !important;
+    transition: background-color 0.2s ease !important;
+}
+
+/* === BOTÓN SCROLL TO TOP === */
+.scroll-top-btn {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: var(--primary-orange);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.8rem;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(255, 94, 0, 0.4);
+  
+  /* Estado inicial: Oculto */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.4s ease;
+  
+  /* Centrar el ícono */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Estado visible */
+.scroll-top-btn.show-scroll {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.scroll-top-btn:hover {
+  background-color: #222;
+  transform: translateY(-5px);
+}
+
+/* === ESTILOS DEL MODAL === */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+
+.modal-content {
+  background: white;
+  width: 90%;
+  max-width: 450px; 
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  padding: 0;
+  overflow: hidden;
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  z-index: 10;
+  transition: 0.3s;
+}
+
+.close-modal:hover {
+  color: #222;
+  transform: rotate(90deg);
+}
+
+/* === NUEVOS ESTILOS PARA PRODUCTOS AGOTADOS === */
+.out-of-stock {
+  pointer-events: none; 
+  opacity: 0.85;
+}
+
+.out-of-stock .img-wrapper img {
+  filter: grayscale(100%) opacity(0.55);
+  transform: none !important;
+}
+
+.out-of-stock .price-badge {
+  opacity: 0.6;
+}
+
+.soldout-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  z-index: 5;
+  pointer-events: none;
+}

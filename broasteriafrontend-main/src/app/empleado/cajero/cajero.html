@@ -1,0 +1,217 @@
+<div class="d-flex" style="height: 100vh; overflow: hidden;">
+  
+  <!-- SIDEBAR -->
+  <div class="bg-dark text-white p-3 d-flex flex-column" style="width: 250px;">
+    <h5 class="fw-bold text-center mb-4">D'licias Fast Food</h5>
+    <ul class="nav flex-column">
+      <li class="nav-item mb-2" (click)="ListaPedidos($event)">
+        <a href="#" class="nav-link text-white fw-semibold">
+          <i class="bi bi-cup-hot me-2"></i> Lista de Pedidos
+        </a>
+      </li>
+      <li class="nav-item mb-2" (click)="Facturar($event)">
+        <a href="#" class="nav-link text-white fw-semibold">
+          <i class="bi bi-receipt me-2"></i> Facturar
+        </a>
+      </li>
+      <li class="nav-item mt-auto">
+        <a href="#" class="nav-link text-white fw-semibold" (click)="CerrarSesion($event)">
+          <i class="bi bi-power me-2"></i> Cerrar Sesión
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="flex-grow-1 bg-light p-4 overflow-auto">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="d-flex align-items-center">
+        <img src="logo.png" alt="Logo" width="100" class="me-3">
+        <h3 class="fw-bold text-dark m-0">Facturación y Caja</h3>
+      </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+        
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="input-group input-group-lg">
+              <span class="input-group-text bg-warning border-warning text-dark fw-bold">#</span>
+              <input type="number" class="form-control border-warning" placeholder="Ingresa el ID del Pedido a cobrar..." 
+                     [(ngModel)]="numeroPedido" (keyup.enter)="buscarPedido()">
+              <button class="btn btn-warning fw-bold px-4" type="button" (click)="buscarPedido()">
+                <i class="bi bi-search me-2"></i> Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-body p-4">
+        
+        <div *ngIf="!pedido" class="text-center py-5 text-muted opacity-50">
+          <i class="bi bi-receipt-cutoff display-1"></i>
+          <p class="fs-5 mt-3">Ingresa un número de pedido para cargar los detalles.</p>
+        </div>
+
+        <div *ngIf="pedido">
+          
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded border h-100">
+                <h6 class="fw-bold text-primary mb-3"><i class="bi bi-person-lines-fill me-2"></i>Datos del Cliente</h6>
+                
+                <label class="form-label small fw-bold text-muted">Tipo de Comprobante</label>
+                <select class="form-select mb-2 fw-bold" [(ngModel)]="tipoComprobante" (change)="cambiarTipoComprobante($event)">
+                  <option [value]="1">🧾 BOLETA ELECTRÓNICA</option>
+                  <option [value]="2">🏢 FACTURA ELECTRÓNICA</option>
+                </select>
+
+                <div class="row">
+                  <div class="col-4">
+                    <label class="form-label small text-muted">Documento</label>
+                    <input type="text" class="form-control bg-white" [value]="pedido.cliente.numeroDocumento || '—'" readonly>
+                  </div>
+                  <div class="col-8">
+                    <label class="form-label small text-muted">Razón Social / Nombre</label>
+                    <input type="text" class="form-control bg-white" [value]="pedido.cliente.nombre" readonly>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded border h-100">
+                <h6 class="fw-bold text-success mb-3"><i class="bi bi-wallet2 me-2"></i>Detalles de Pago</h6>
+                
+                <div class="row mb-2">
+                  <div class="col-6">
+                    <label class="form-label small text-muted">Cajero</label>
+                    <input type="text" class="form-control bg-white" value="Cajero Turno Tarde" readonly>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label small text-muted">Fecha Emisión</label>
+                    <input type="text" class="form-control bg-white" [value]="pedido.fechaPedido | date:'dd/MM/yyyy h:mm a'" readonly>
+                  </div>
+                </div>
+
+                <label class="form-label small fw-bold text-muted">Método de Pago</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
+                  <select class="form-select" [(ngModel)]="metodoPago">
+                    <option [value]="1">Efectivo</option>
+                    <option [value]="2">Tarjeta (Visa/Mastercard)</option>
+                    <option [value]="3">Yape</option>
+                    <option [value]="4">Plin</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h6 class="fw-bold mb-2 ps-1">Detalle de Consumo</h6>
+          <div class="table-responsive mb-4 rounded border">
+            <table class="table table-hover table-striped align-middle mb-0 text-center">
+              <thead class="table-dark">
+                <tr>
+                  <th class="text-start ps-4">Descripción</th>
+                  <th>Cant.</th>
+                  <th>P. Unit.</th>
+                  <th>Importe</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let det of pedido.detalles">
+                  <td class="text-start ps-4 fw-semibold">{{ det.producto.nombre }}</td>
+                  <td>{{ det.cantidad }}</td>
+                  <td>S/. {{ det.precioUnitario | number:'1.2-2' }}</td>
+                  <td class="fw-bold">S/. {{ det.subtotal | number:'1.2-2' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="row align-items-start">
+            <div class="col-md-7">
+              <label class="form-label fw-semibold text-muted">Observaciones (Opcional)</label>
+              <textarea class="form-control bg-light" rows="3" placeholder="Escribe aquí si hay alguna nota para el comprobante..."></textarea>
+            </div>
+
+            <div class="col-md-5">
+              <div class="card bg-dark text-white p-3 shadow-sm">
+                <div class="d-flex justify-content-between mb-1">
+                  <span class="text-white-50">Op. Gravada</span>
+                  <span>S/. {{ subtotal | number:'1.2-2' }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2 border-bottom border-secondary pb-2">
+                  <span class="text-white-50">IGV (18%)</span>
+                  <span>S/. {{ igv | number:'1.2-2' }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="fs-5 fw-light">TOTAL A PAGAR</span>
+                  <span class="fs-2 fw-bold text-warning">S/. {{ total | number:'1.2-2' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-4">
+          <div class="d-flex justify-content-end gap-2 ">
+            <button class="btn btn-outline-secondary px-4 fw-bold" (click)="limpiar()">
+              <i class="bi bi-trash me-1"></i> LIMPIAR
+            </button>
+            
+            <button class="btn btn-success text-white px-4 fw-bold" (click)="imprimir()">
+              <i class="bi bi-printer me-1"></i> COBRAR E IMPRIMIR
+            </button>
+          </div>
+
+        </div> 
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="custom-modal-backdrop" *ngIf="mostrarModal"></div>
+
+<div class="custom-modal" *ngIf="mostrarModal">
+  <div class="custom-modal-content">
+    <div class="modal-header-custom">
+      <i class="bi" 
+         [ngClass]="{
+           'bi-check-circle-fill text-success': modalTipo === 'success',
+           'bi-x-circle-fill text-danger': modalTipo === 'error',
+           'bi-question-circle-fill text-warning': modalTipo === 'confirm'
+         }">
+      </i>
+
+      <h5 class="modal-title-custom">{{ modalTitulo }}</h5>
+    </div>
+
+    <div class="modal-body-custom">
+      <p>{{ modalMensaje }}</p>
+    </div>
+
+    <div class="modal-footer-custom">
+      <button class="btn fw-bold px-3 me-2"
+              *ngIf="modalTipo === 'confirm'"
+              [ngClass]="{
+                'btn-success': modalAccion === 'cobrar',
+                'btn-warning': modalAccion === 'cerrarSesion'
+              }"
+              (click)="ejecutarAccion()">
+
+        {{ modalAccion === 'cobrar' ? 'Sí, cobrar ahora' : 'Sí, cerrar sesión' }}
+      </button>
+      <button class="btn btn-secondary px-3" (click)="cerrarModal()">
+        Aceptar
+      </button>
+    </div>
+
+  </div>
+</div>

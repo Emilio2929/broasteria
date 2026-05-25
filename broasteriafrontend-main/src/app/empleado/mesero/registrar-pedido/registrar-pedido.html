@@ -1,0 +1,187 @@
+<!-- CONTENEDOR DE NOTIFICACIONES -->
+<div class="notification-container-fixed">
+  <div *ngFor="let noti of notificaciones" 
+       class="notification-toast"
+       [class.closing]="noti.closing">
+
+    <div class="d-flex align-items-center justify-content-between w-100">
+      <span class="d-flex align-items-center">
+        <i class="bi bi-bell-fill me-3 fs-3"></i> 
+        <span class="fs-6">{{ noti.mensaje }}</span>
+      </span>
+      <!-- Boton cerrar -->
+      <button type="button" class="btn-close ms-3" (click)="cerrarNotificacion(noti.id)"></button>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex" style="height: 100vh; overflow: hidden;">
+  
+  <!-- SIDEBAR -->
+  <div class="bg-dark text-white p-3 d-flex flex-column" style="width: 250px;">
+    <h5 class="fw-bold text-center mb-4">D'licias Fast Food</h5>
+    <ul class="nav flex-column">
+      <li class="nav-item mb-2" (click)="ListPedidos($event)">
+        <a href="#" class="nav-link text-white fw-semibold">
+          <i class="bi bi-list me-2"></i> Lista de Pedidos
+        </a>
+      </li>
+      <li class="nav-item mb-2" (click)="RegisPedidoObli($event)">
+        <a href="#" class="nav-link text-white fw-semibold">
+          <i class="bi bi-plus-square me-2"></i> Generar Pedido
+        </a>
+      </li>
+      <li class="nav-item mt-auto" (click)="CerrarSesion($event)">
+        <a href="#" class="nav-link text-white fw-semibold">
+          <i class="bi bi-power me-2"></i> Cerrar Sesión
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="flex-grow-1 bg-light p-4 overflow-auto">
+    <div class="d-flex align-items-center mb-3">
+      <img src="logo.png" alt="Logo" width="100" class="me-3">
+      <div>
+        <h3 class="fw-bold text-dark m-0">Generar Pedido</h3>
+      </div>
+    </div>
+
+    <!-- SECCION DE SELECCION -->
+    <div class="card mb-4 shadow-sm" style="border: none;"> 
+      <div class="card-header text-white fw-semibold" style="background-color: rgb(238, 186, 43);">
+        <i class="bi bi-hand-index-thumb me-2"></i>TOMAR PEDIDOS
+      </div>
+      <div class="card-body">
+        <!-- CATEGORIAS -->
+        <div class="mb-3">
+          <h6 class="text-muted text-uppercase small fw-bold mb-2">Categorías</h6>
+          <button 
+          *ngFor="let cat of categorias" 
+          class="btn btn-light me-2 mb-2 btn-custom-cat" 
+          (click)="cargarProductos(cat.id)">
+            {{ cat.nombreCategoria }}
+          </button>
+        </div>
+        
+        <!-- PRODUCTOS -->
+        <div>
+          <h6 class="text-muted text-uppercase small fw-bold mb-2" *ngIf="productos.length > 0">Productos</h6>
+            <button 
+                *ngFor="let prod of productos" 
+                class="btn me-2 mb-2 btn-custom-prod text-dark"
+                [ngClass]="{'btn-warning': prod.stock > 0, 'btn-secondary': prod.stock <= 0}" (click)="agregarAlPedido(prod)"
+                [disabled]="prod.stock <= 0"> {{ prod.nombre }}
+            </button>
+          <p class="text-muted small fst-italic" *ngIf="productos.length === 0">Selecciona una categoría para ver productos.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLA DE ORDEN -->
+    <div class="card shadow-sm" style="border: none;">
+      <div class="card-header bg-success text-white fw-semibold">
+        <i class="bi bi-cart-check me-2"></i>REGISTRO DE ÓRDENES
+      </div>
+      <div class="card-body">
+        <div class="table-responsive mb-3">
+          <table class="table align-middle text-center custom-table">
+            <thead class="table-dark">
+              <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+                <th *ngIf="pedidoTemporal.length > 0">Opciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of pedidoTemporal; let i = index">
+                <td class="fw-bold text-start ps-4">{{ item.nombre }}</td>
+                <td>{{ item.precio | currency:'PEN' }}</td>
+                <!-- COLUMNA CANTIDAD CON CONTROLES -->
+                <td>
+                  <div class="d-flex justify-content-center align-items-center gap-2">
+                    <!-- BOTON MENOS -->
+                    <button class="btn btn-sm btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center" 
+                            style="width: 32px; height: 32px;" 
+                            (click)="disminuirCantidad(i)"
+                            [disabled]="item.cantidad <= 1">
+                      <i class="bi bi-dash-lg"></i>
+                    </button>
+                    
+                    <!-- NUMERO CANTIDAD -->
+                    <span class="badge bg-light text-dark border fs-6" style="min-width: 40px;">
+                      {{ item.cantidad }}
+                    </span>
+
+                    <!-- BOTON MÁS -->
+                    <button class="btn btn-sm btn-outline-primary rounded-circle d-flex align-items-center justify-content-center" 
+                            style="width: 32px; height: 32px;" 
+                            (click)="aumentarCantidad(i)"
+                            [disabled]="item.cantidad >= item.stock"> <i class="bi bi-plus-lg"></i>
+                    </button>
+                  </div>
+                </td>
+                <td class="text-success fw-bold">{{ item.precio * item.cantidad | currency:'PEN' }}</td>
+                <td>
+                  <button class="btn btn-danger btn-sm px-3 shadow-sm" (click)="eliminarDelPedido(i)">
+                    <i class="bi bi-trash-fill me-1"></i> Eliminar
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="pedidoTemporal.length === 0">
+                <td colspan="5" class="text-muted py-4">
+                  <i class="bi bi-basket fs-2 d-block mb-2 opacity-50"></i>
+                  No hay productos en la orden actual.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Especificaciones del pedido:</label>
+          <div class="input-group">
+             <span class="input-group-text bg-white border-end-0"><i class="bi bi-pencil"></i></span>
+             <input type="text" class="form-control border-start-0" placeholder="Ej: sin ensalada, sin mayonesa, etc" [(ngModel)]="detallePedido">
+          </div>
+        </div>
+        
+        <div class="text-end">
+          <button class="btn btn-info text-white fw-bold shadow-sm px-4 py-2" (click)="enviarPedido()" [disabled]="pedidoTemporal.length === 0">
+            <i class="fa-solid fa-paper-plane me-1"></i> ENVIAR PEDIDO
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL DE CERRAR SESION -->
+<div class="custom-modal-backdrop" *ngIf="mostrarModal"></div>
+<div class="custom-modal" *ngIf="mostrarModal">
+  <div class="custom-modal-content">
+    <div class="modal-header-custom">
+      <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+      <h5 class="modal-title-custom">{{ modalTitulo }}</h5>
+    </div>
+    <div class="modal-body-custom">
+      <p>{{ modalMensaje }}</p>
+    </div>
+    <div class="modal-footer-custom">
+      <button class="btn btn-warning fw-bold px-3 me-2"
+              *ngIf="modalTipo === 'confirm'"
+              (click)="ejecutarAccion()">
+        Sí, Cerrar Sesión
+      </button>
+      <button class="btn btn-secondary px-3"
+              (click)="cerrarModal()">
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>
