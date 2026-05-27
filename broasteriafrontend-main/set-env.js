@@ -4,8 +4,8 @@ const path = require('path');
 // Ruta del archivo environments.ts
 const targetPath = path.resolve(__dirname, 'src/environments.ts');
 
-// Leer la variable de entorno de Vercel, o usar localhost por defecto
-const apiUrl = process.env.API_URL || 'https://TU_URL_DE_RENDER_AQUI.onrender.com';
+// Leer la variable de entorno de Vercel, o usar localhost por defecto (para desarrollo local)
+const apiUrl = process.env.API_URL || 'http://localhost:8080';
 
 const envConfigFile = `export const environment = {
   production: true,
