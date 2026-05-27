@@ -5,7 +5,7 @@ const path = require('path');
 const targetPath = path.resolve(__dirname, 'src/environments.ts');
 
 // Leer la variable de entorno de Vercel, o usar localhost por defecto
-const apiUrl = process.env.API_URL || 'http://localhost:8080';
+const apiUrl = process.env.API_URL || 'https://broasteria.onrender.com';
 
 const envConfigFile = `export const environment = {
   production: true,
