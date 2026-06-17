@@ -74,8 +74,11 @@ export class Chef implements OnInit, OnDestroy {
   empezarCoccion(pedido: any) {
     
     this.chefService.cambiarEstadoPedido(pedido.id, 2).subscribe({
-      next: () => {
-        this.cargarPedidos(false); 
+      next: (pedidoActualizado) => {
+        this.pedidos = this.pedidos.map(item =>
+          item.id === pedidoActualizado.id ? pedidoActualizado : item
+        );
+        this.cdr.detectChanges();
       },
       error: (e) => alert("Error al iniciar cocción")
     });
@@ -101,7 +104,8 @@ export class Chef implements OnInit, OnDestroy {
     this.chefService.cambiarEstadoPedido(id, 3).subscribe({
       next: () => {
         this.cerrarModalCompletar();
-        this.cargarPedidos(false); 
+        this.pedidos = this.pedidos.filter(pedido => pedido.id !== id);
+        this.cdr.detectChanges();
       },
       error: (e) => {
         alert("Error al finalizar pedido");
