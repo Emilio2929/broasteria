@@ -33,6 +33,7 @@ public class PedidoService {
     private final TipoPagoRepository tipoPagoRepository;
     private final TipoComprobantePagoRepository tipoComprobantePagoRepository;
     private final FacturaService facturaService;
+    private final PedidoRealtimeService pedidoRealtimeService;
 
     public PedidoService(PedidoRepository pedidoRepository,
             ClienteRepository clienteRepository,
@@ -44,7 +45,8 @@ public class PedidoService {
             EmailService emailService,
             TipoPagoRepository tipoPagoRepository,
             TipoComprobantePagoRepository tipoComprobantePagoRepository,
-            FacturaService facturaService) {
+            FacturaService facturaService,
+            PedidoRealtimeService pedidoRealtimeService) {
         this.pedidoRepository = pedidoRepository;
         this.clienteRepository = clienteRepository;
         this.productoRepository = productoRepository;
@@ -56,6 +58,7 @@ public class PedidoService {
         this.tipoPagoRepository = tipoPagoRepository;
         this.tipoComprobantePagoRepository = tipoComprobantePagoRepository;
         this.facturaService = facturaService;
+        this.pedidoRealtimeService = pedidoRealtimeService;
     }
 
     @Transactional
@@ -159,6 +162,7 @@ public class PedidoService {
             }
         }
 
+        pedidoRealtimeService.publicar("PEDIDO_CREADO", pedidoGuardado);
         return pedidoGuardado;
     }
 
@@ -288,7 +292,9 @@ public class PedidoService {
     public PedidoModel completarPedido(Integer idPedido) {
         PedidoModel pedido = pedidoRepository.findById(idPedido).orElseThrow();
         pedido.setEstado(estadoPedidoRepository.findById(5).orElseThrow());
-        return pedidoRepository.save(pedido);
+        PedidoModel guardado = pedidoRepository.save(pedido);
+        pedidoRealtimeService.publicar("PEDIDO_COMPLETADO", guardado);
+        return guardado;
     }
 
     @Transactional
@@ -310,6 +316,7 @@ public class PedidoService {
 
         pedido.setEstado(estadoPedidoRepository.findById(5).orElseThrow());
         pedidoRepository.save(pedido);
+        pedidoRealtimeService.publicar("PEDIDO_COMPLETADO", pedido);
     }
 
     @Transactional
@@ -331,6 +338,7 @@ public class PedidoService {
                 .orElseThrow(() -> new IllegalArgumentException("Estado Cancelado no existe"));
         pedido.setEstado(estadoCancelado);
         pedidoRepository.saveAndFlush(pedido);
+        pedidoRealtimeService.publicar("PEDIDO_CANCELADO", pedido);
 
         try {
             enviarCorreoCancelacion(pedido);
@@ -376,13 +384,27 @@ public class PedidoService {
         }
         detallePedidoRepository.deleteAll(pedido.getDetalles());
         pedidoRepository.delete(pedido);
+        pedidoRealtimeService.publicar("PEDIDO_ELIMINADO", pedido);
     }
 
     @Transactional
     public PedidoModel cambiarEstadoPedido(Integer idPedido, Integer idEstado) {
         PedidoModel pedido = pedidoRepository.findById(idPedido).orElseThrow();
         pedido.setEstado(estadoPedidoRepository.findById(idEstado).orElseThrow());
-        return pedidoRepository.save(pedido);
+        PedidoModel guardado = pedidoRepository.save(pedido);
+        pedidoRealtimeService.publicar(tipoEventoPorEstado(idEstado), guardado);
+        return guardado;
+    }
+
+    private String tipoEventoPorEstado(Integer idEstado) {
+        return switch (idEstado) {
+            case 2 -> "PEDIDO_PREPARANDO";
+            case 3 -> "PEDIDO_LISTO";
+            case 4 -> "PEDIDO_CANCELADO";
+            case 5 -> "PEDIDO_COMPLETADO";
+            case 6 -> "PEDIDO_EN_CAMINO";
+            default -> "PEDIDO_ESTADO_CAMBIADO";
+        };
     }
 
     public PedidoModel buscarPorIdPedido(Integer idPedido) {
@@ -446,7 +468,9 @@ public class PedidoService {
                 .orElseThrow(() -> new IllegalArgumentException("Estado 'En camino' no existe"));
 
         pedido.setEstado(enCamino);
-        return pedidoRepository.save(pedido);
+        PedidoModel guardado = pedidoRepository.save(pedido);
+        pedidoRealtimeService.publicar("PEDIDO_EN_CAMINO", guardado);
+        return guardado;
     }
 
     public List<PedidoModel> listarPedidosDelivery() {
@@ -500,6 +524,8 @@ public class PedidoService {
         }
 
         pedido.setEstado(completado);
-        return pedidoRepository.save(pedido);
+        PedidoModel guardado = pedidoRepository.save(pedido);
+        pedidoRealtimeService.publicar("PEDIDO_COMPLETADO", guardado);
+        return guardado;
     }
 }

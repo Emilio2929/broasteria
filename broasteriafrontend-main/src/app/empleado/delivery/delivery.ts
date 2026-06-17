@@ -4,7 +4,8 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { DeliveryService } from '../../services/delivery.service';
 import { FormsModule } from '@angular/forms';
-import { Subscription, interval } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { PedidoRealtimeService } from '../../services/pedido-realtime.service';
 
 @Component({
   selector: 'app-delivery',
@@ -37,6 +38,7 @@ export class Delivery implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private deliveryService: DeliveryService,
+    private pedidoRealtime: PedidoRealtimeService,
     private cd: ChangeDetectorRef
   ) {}
 
@@ -48,7 +50,7 @@ export class Delivery implements OnInit, OnDestroy {
 
     this.cargarPedidos();
 
-    this.updateSubscription = interval(1000).subscribe(() => {
+    this.updateSubscription = this.pedidoRealtime.escuchar('delivery').subscribe(() => {
       this.cargarPedidos(false);
     });
   }

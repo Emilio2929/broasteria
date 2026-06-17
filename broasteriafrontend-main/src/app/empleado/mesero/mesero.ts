@@ -5,7 +5,8 @@ import { Router } from '@angular/router';
 import { MeseroService } from '../../services/mesero.service';
 import { EmpleadoService } from '../../services/empleado.service';
 import { FormsModule } from '@angular/forms';
-import { Subscription, interval } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { PedidoRealtimeService } from '../../services/pedido-realtime.service';
 
 @Component({
   selector: 'app-mesero',
@@ -37,6 +38,7 @@ export class Mesero implements OnInit, OnDestroy {
     private router: Router,
     private meseroService: MeseroService,
     private empleadoService: EmpleadoService,
+    private pedidoRealtime: PedidoRealtimeService,
     private cd: ChangeDetectorRef
   ) {}
 
@@ -51,7 +53,7 @@ export class Mesero implements OnInit, OnDestroy {
       this.mostrarNotificacion(noti);
     });
 
-    this.updateSubscription = interval(1000).subscribe(() => {
+    this.updateSubscription = this.pedidoRealtime.escuchar('mesero').subscribe(() => {
       this.cargarTodosLosPedidos(false);
     });
   }

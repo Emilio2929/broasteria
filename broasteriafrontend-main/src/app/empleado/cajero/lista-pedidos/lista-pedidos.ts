@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { CajeroService } from '../../../services/cajero.service';
 import { HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Subscription, interval } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { EmpleadoService } from '../../../services/empleado.service';
+import { PedidoRealtimeService } from '../../../services/pedido-realtime.service';
 
 @Component({
   selector: 'app-lista-pedidos',
@@ -34,13 +35,14 @@ export class ListaPedidos implements OnInit, OnDestroy {
     private cajeroService: CajeroService, 
     private router: Router,
     private cd: ChangeDetectorRef,
-    private empleadoService: EmpleadoService
+    private empleadoService: EmpleadoService,
+    private pedidoRealtime: PedidoRealtimeService
     
   ) {}
 
   ngOnInit() {
     this.cargarPedidos(true);
-    this.updateSubscription = interval(1000).subscribe(() => {
+    this.updateSubscription = this.pedidoRealtime.escuchar('cajero').subscribe(() => {
       this.cargarPedidos(false);
     });
   }

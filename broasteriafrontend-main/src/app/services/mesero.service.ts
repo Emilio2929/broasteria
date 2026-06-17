@@ -2,8 +2,8 @@ import { environment } from 'src/environments';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router'; 
-import { Observable, Subject, interval, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { PedidoRealtimeService } from './pedido-realtime.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,59 +19,27 @@ export class MeseroService {
     private notificacionSource = new Subject<any>();
     notificacion$ = this.notificacionSource.asObservable();
 
-    // SONIDO GLOBAL
     private audio = new Audio('/assets/notificacionpedidolisto.mp3');
-    private idsListosPrevios: Set<number> = new Set();
     private monitoreoSubscription: Subscription | undefined;
-    private esPrimeraCarga: boolean = true;
 
-    constructor(private http: HttpClient, private router: Router) {
+    constructor(
+      private http: HttpClient,
+      private router: Router,
+      private pedidoRealtime: PedidoRealtimeService
+    ) {
         this.iniciarMonitoreoGlobal();
     }
     
-    // --- LOGICA GLOBAL DE MONITOREO ---
     iniciarMonitoreoGlobal() {
         if (this.monitoreoSubscription) return;
-        this.monitoreoSubscription = interval(1000).pipe(
-            switchMap(() => this.listarPedidos()) 
-        ).subscribe({
-            next: (pedidos) => {
-                this.verificarNuevosListos(pedidos);
-            },
-            error: (err) => console.error("Error en monitoreo global", err)
-        });
-    }
-
-    private verificarNuevosListos(pedidos: any[]) {
-        const listosActuales = pedidos.filter((p: any) => p.estado?.id == 3);
-        const listosActualesIds = new Set(listosActuales.map((p: any) => p.id));
-
-        if (this.esPrimeraCarga) {
-            this.idsListosPrevios = listosActualesIds;
-            this.esPrimeraCarga = false;
-            return;
-        }
-
-        const esPantallaChef = this.router.url.includes('/chef');
-
-        listosActuales.forEach((pedido: any) => {
-            if (!this.idsListosPrevios.has(pedido.id)) {
-                
-                console.log(` Analizando Pedido #${pedido.id} para notificar:`, pedido);
-                console.log(`   - Cliente ID: ${pedido.cliente?.id}`);
-                console.log(`   - Empleado ID: ${pedido.empleado?.id}`);
-
-                if (!esPantallaChef && pedido.cliente?.id === 1) {
-                    console.log(" ¡Es pedido de Mesero! -> SONANDO ");
-                    this.reproducirSonido();
-                    this.enviarNotificacionVisual(pedido.id);
-                } else {
-                    console.log(" Es pedido Web o Chef -> SILENCIO ");
-                }
+        this.monitoreoSubscription = this.pedidoRealtime.escuchar('mesero').subscribe((evento) => {
+            if (evento.estadoId !== 3 || this.router.url.includes('/chef')) {
+                return;
             }
-        });
 
-        this.idsListosPrevios = listosActualesIds;
+            this.reproducirSonido();
+            this.enviarNotificacionVisual(evento.pedidoId);
+        });
     }
 
     private reproducirSonido() {

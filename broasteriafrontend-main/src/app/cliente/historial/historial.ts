@@ -3,8 +3,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ClienteService } from '../../services/cliente.service';
-import { Subscription, interval } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { environment } from 'src/environments';
+import { PedidoRealtimeService } from '../../services/pedido-realtime.service';
 
 @Component({
   selector: 'app-historial',
@@ -29,6 +30,7 @@ export class Historial implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private http: HttpClient,
     private clienteService: ClienteService,
+    private pedidoRealtime: PedidoRealtimeService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -56,9 +58,14 @@ export class Historial implements OnInit, OnDestroy {
         this.cargarHistorial(true);
     }, 100);
 
-    this.updateSubscription = interval(5000).subscribe(() => {
+    const clienteStr = localStorage.getItem('cliente');
+    const cliente = clienteStr ? JSON.parse(clienteStr) : null;
+
+    if (cliente?.id) {
+      this.updateSubscription = this.pedidoRealtime.escuchar('cliente', cliente.id).subscribe(() => {
         this.cargarHistorial(false);
-    });
+      });
+    }
   }
 
   ngOnDestroy() {

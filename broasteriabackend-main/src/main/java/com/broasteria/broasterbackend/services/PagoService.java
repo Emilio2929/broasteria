@@ -33,6 +33,8 @@ public class PagoService {
     private DetallePedidoRepository detallePedidoRepository;
     @Autowired
     private FacturaService facturaService;
+    @Autowired
+    private PedidoRealtimeService pedidoRealtimeService;
 
     private final Random random = new Random();
 
@@ -135,6 +137,7 @@ public class PagoService {
             System.err.println(">>> ERROR CORREO POST-PAGO: " + e.getMessage());
         }
 
+        pedidoRealtimeService.publicar("PEDIDO_PAGADO", pedido);
         return pago;
     }
 
@@ -172,6 +175,7 @@ public class PagoService {
             List<DetallePedidoModel> detalles = detallePedidoRepository.findByPedidoId(pedido.getId());
             enviarCorreoConfirmacionEfectivo(pedido, detalles);
         }
+        pedidoRealtimeService.publicar("PEDIDO_PAGADO", pedido);
         return savedPago;
     }
 

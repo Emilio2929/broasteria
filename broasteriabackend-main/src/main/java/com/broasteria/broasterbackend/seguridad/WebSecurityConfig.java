@@ -76,6 +76,8 @@ public class WebSecurityConfig {
 
                                                 .permitAll()
 
+                                                .requestMatchers("/ws/**").permitAll()
+
                                                 .requestMatchers("/chat/**").permitAll()
 
                                                 .requestMatchers(

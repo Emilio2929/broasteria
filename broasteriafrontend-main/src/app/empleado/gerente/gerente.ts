@@ -12,7 +12,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { Subscription, interval } from 'rxjs';
 
 @Component({
   selector: 'app-gerente',
@@ -28,8 +27,6 @@ export class Gerente implements OnInit, OnDestroy {
   
   empleadoParaEditar: any = null;
   
-  private updateSubscription: Subscription | undefined; 
-
   ocultarPassword = true;
   ocultarPasswordAdmin = true; 
 
@@ -77,15 +74,9 @@ export class Gerente implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.listarEmpleado(); 
     this.cargarRol();
-    this.updateSubscription = interval(1000).subscribe(() => {
-        this.listarEmpleado(false); 
-    });
   }
 
   ngOnDestroy(): void {
-    if (this.updateSubscription) {
-        this.updateSubscription.unsubscribe();
-    }
   }
 
   // LISTAR EMPLEADOS 
@@ -183,10 +174,6 @@ export class Gerente implements OnInit, OnDestroy {
         this.cdRef.detectChanges();
 
         setTimeout(() => {
-          if (this.updateSubscription) {
-            this.updateSubscription.unsubscribe();
-          }
-
           const dialogRef = this.dialog.open(Detalleditar, {
             width: '700px',
             data: { empleado: this.empleadoParaEditar },
@@ -194,9 +181,7 @@ export class Gerente implements OnInit, OnDestroy {
 
           dialogRef.afterClosed().subscribe(() => {
             this.empleadoParaEditar = null;
-            this.updateSubscription = interval(500).subscribe(() => {
-              this.listarEmpleado(false);
-            });
+            this.listarEmpleado(false);
           });
         }, 200);
       },

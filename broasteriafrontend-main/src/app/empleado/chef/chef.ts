@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { EmpleadoService } from '../../services/empleado.service';
 import { ChefService } from '../../services/chef.service'; 
-import { Subscription, interval } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { PedidoRealtimeService } from '../../services/pedido-realtime.service';
 
 @Component({
   selector: 'app-chef',
@@ -36,13 +37,14 @@ export class Chef implements OnInit, OnDestroy {
     private router: Router,
     private chefService: ChefService,
     private empleadoService: EmpleadoService,
+    private pedidoRealtime: PedidoRealtimeService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.isLoading = true;
     this.cargarPedidos();
-    this.updateSubscription = interval(1000).subscribe(() => {
+    this.updateSubscription = this.pedidoRealtime.escuchar('chef').subscribe(() => {
       this.cargarPedidos(false);
     });
   }
