@@ -158,7 +158,12 @@ export class Historial implements OnInit, OnDestroy {
     this.http.put(`${environment.apiUrl}/pedidos/cancelar/${idPedido}`, {}).subscribe({
       next: () => {
         this.notify('Pedido Cancelado', `El pedido #${numeroCliente} ha sido cancelado.`, 'success', 2500);
-        this.cargarHistorial(true);
+        this.pedidos = this.pedidos.map((pedido) =>
+          pedido.id === idPedido
+            ? { ...pedido, estado: { ...pedido.estado, id: 4, nombre: 'Cancelado' } }
+            : pedido
+        );
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error al cancelar:', err);

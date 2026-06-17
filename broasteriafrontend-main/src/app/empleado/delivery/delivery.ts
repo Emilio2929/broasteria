@@ -108,10 +108,7 @@ export class Delivery implements OnInit, OnDestroy {
       next: (data) => {
 
         this.pedidos = (data || [])
-          .map(p => ({
-            ...p,
-            metodoPago: p.metodoPago || 1
-          }))
+          .map(p => this.normalizarPedido(p))
           .filter(p => p.cliente?.id !== 1);
 
         this.cargando = false;
@@ -131,9 +128,11 @@ export class Delivery implements OnInit, OnDestroy {
 
   enCamino(idPedido: number) {
     this.deliveryService.marcarEnCamino(idPedido).subscribe({
-      next: () => {
+      next: (pedidoActualizado) => {
         this.mostrarNotificacion("Pedido marcado como EN CAMINO");
-        this.cargarPedidos();
+        this.pedidos = this.pedidos.map(pedido =>
+          pedido.id === pedidoActualizado.id ? this.normalizarPedido(pedidoActualizado) : pedido
+        );
         this.cd.detectChanges();
       },
       error: () => {
@@ -169,14 +168,14 @@ export class Delivery implements OnInit, OnDestroy {
       this.pedidoSeleccionado.id,
       this.documentoIngresado
     ).subscribe({
-      next: () => {
+      next: (pedidoActualizado) => {
         this.mostrarModalMensaje(
           'success',
           'Éxito',
           "Documento correcto. Pedido completado."
         );
         this.mostrarModal = false;
-        this.cargarPedidos();
+        this.pedidos = this.pedidos.filter(pedido => pedido.id !== pedidoActualizado.id);
         this.cd.detectChanges();
       },
       error: (err) => {
@@ -197,6 +196,13 @@ export class Delivery implements OnInit, OnDestroy {
     const ceRegex = /^[A-Za-z0-9]{9,12}$/;
 
     return dniRegex.test(doc) || ceRegex.test(doc);
+  }
+
+  private normalizarPedido(pedido: any) {
+    return {
+      ...pedido,
+      metodoPago: pedido.metodoPago || 1
+    };
   }
 
   CerrarSesion(event: Event) {
