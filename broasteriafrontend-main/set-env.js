@@ -1,19 +1,41 @@
 const fs = require('fs');
 const path = require('path');
 
-// Ruta del archivo environments.ts
 const targetPath = path.resolve(__dirname, 'src/environments.ts');
+const isVercel = process.env.VERCEL === '1';
+const configuredApiUrl = process.env.API_URL?.trim();
 
-const apiUrl = process.env.API_URL || 'http://localhost:8080';
-const wsUrl = process.env.WS_URL || apiUrl.replace(/^https?:\/\//, apiUrl.startsWith('https') ? 'wss://' : 'ws://');
+if (isVercel && !configuredApiUrl) {
+  throw new Error('Falta API_URL en las variables de entorno de Vercel.');
+}
+
+const apiUrl = (configuredApiUrl || 'http://localhost:8080').replace(/\/+$/, '');
+
+if (!/^https?:\/\//.test(apiUrl)) {
+  throw new Error('API_URL debe comenzar con http:// o https://.');
+}
+
+if (isVercel && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(apiUrl)) {
+  throw new Error('API_URL no puede apuntar a localhost durante un despliegue en Vercel.');
+}
+
+const configuredWsUrl = process.env.WS_URL?.trim();
+const wsUrl = (configuredWsUrl || apiUrl.replace(/^http/, 'ws')).replace(/\/+$/, '');
+
+if (!/^wss?:\/\//.test(wsUrl)) {
+  throw new Error('WS_URL debe comenzar con ws:// o wss://.');
+}
+
+if (isVercel && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(wsUrl)) {
+  throw new Error('WS_URL no puede apuntar a localhost durante un despliegue en Vercel.');
+}
 
 const envConfigFile = `export const environment = {
-  production: true,
-  apiUrl: '${apiUrl}',
-  wsUrl: '${wsUrl}'
+  production: ${isVercel},
+  apiUrl: ${JSON.stringify(apiUrl)},
+  wsUrl: ${JSON.stringify(wsUrl)}
 };
 `;
 
-// Sobrescribir environments.ts
 fs.writeFileSync(targetPath, envConfigFile);
 console.log(`[set-env.js] environments.ts generado con apiUrl: ${apiUrl} y wsUrl: ${wsUrl}`);
