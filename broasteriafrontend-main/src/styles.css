@@ -297,3 +297,26 @@ html {
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+@media (max-width: 767.98px) {
+  body:has(app-menu) app-chatbot .chat-fab,
+  body:has(app-carrito) app-chatbot .chat-fab,
+  body:has(app-historial) app-chatbot .chat-fab,
+  body:has(app-infocliente) app-chatbot .chat-fab {
+    bottom: 82px;
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  body:has(app-menu) app-chatbot .chat-window,
+  body:has(app-carrito) app-chatbot .chat-window,
+  body:has(app-historial) app-chatbot .chat-window,
+  body:has(app-infocliente) app-chatbot .chat-window {
+    top: max(12px, env(safe-area-inset-top, 0px)) !important;
+    right: 12px;
+    bottom: 82px;
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px)) !important;
+    width: min(370px, calc(100vw - 24px));
+    height: auto !important;
+    max-height: none !important;
+  }
+}
+

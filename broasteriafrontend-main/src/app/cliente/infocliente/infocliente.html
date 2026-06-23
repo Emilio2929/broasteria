@@ -1,204 +1,62 @@
-<div class="main-wrapper">
-
-  <div class="orange-header-bg"></div>
-
-  <nav class="custom-navbar d-flex justify-content-end align-items-center p-4 position-relative" style="z-index: 10;">
-    <div class="nav-links d-flex gap-4 align-items-center">
-      <a href="#" class="nav-item" (click)="inicio($event)">INICIO</a>
-      <a href="#" class="nav-item" (click)="carrito($event)"><i class="bi bi-cart-fill"></i> CARRITO</a>
-      <a href="#" class="nav-item" (click)="historial($event)">HISTORIAL</a>
-      <div class="profile-btn" (click)="abrirPerfil()"><i class="bi-person-fill fs-5"></i></div>
+<div class="client-page">
+  <nav class="client-nav">
+    <div class="brand"><img src="logo.png" alt="D'licias Fast Food"><span>D'licias <strong>Fast Food</strong></span></div>
+    <div class="nav-actions">
+      <a href="#" (click)="inicio($event)"><i class="bi bi-house-door-fill"></i><span>Inicio</span></a>
+      <a href="#" (click)="carrito($event)"><i class="bi bi-bag-fill"></i><span>Carrito</span></a>
+      <a href="#" (click)="historial($event)"><i class="bi bi-receipt"></i><span>Historial</span></a>
+      <button type="button" class="profile-btn active" (click)="abrirPerfil()" aria-label="Abrir perfil"><i class="bi bi-person-fill"></i><span>Perfil</span></button>
     </div>
   </nav>
 
-  <div class="container content-container">
-    <h1 class="page-title">Mi Perfil</h1>
+  <header class="profile-hero">
+    <div class="avatar"><span>{{ cliente.nombre?.charAt(0) }}{{ cliente.apellido?.charAt(0) }}</span></div>
+    <div class="identity"><span>Mi cuenta</span><h1>{{ cliente.nombre }} {{ cliente.apellido }}</h1><p><i class="bi bi-check-circle-fill"></i> Cliente registrado</p></div>
+    <button type="button" class="edit-btn" [class.active]="modoEdicion" (click)="activarEdicion()" [disabled]="guardando"><i class="bi" [ngClass]="modoEdicion ? 'bi-x-lg' : 'bi-pencil'"></i>{{ modoEdicion ? 'Cancelar' : 'Editar perfil' }}</button>
+  </header>
 
-    <div class="row justify-content-center">
-      <div class="col-lg-8 col-md-10">
-        <div class="profile-card">
-          
-          <div class="text-center mb-4">
-            <div class="big-avatar"><i class="bi bi-person"></i></div>
-            <h3 class="fw-bold m-0">{{ cliente.nombre }} {{ cliente.apellido }}</h3>
-            <p class="text-muted small text-uppercase ls-1">Cliente Registrado</p>
-            
-            <button class="btn-action btn-edit mt-2" [class.active]="modoEdicion" (click)="activarEdicion()" [disabled]="guardando">
-              <i class="bi" [ngClass]="modoEdicion ? 'bi-x-lg' : 'bi-pencil-fill'"></i>
-              {{ modoEdicion ? 'Cancelar Edición' : 'Editar Datos' }}
-            </button>
-          </div>
-
-          <div class="row g-4">
-            <div class="col-md-6">
-              <label class="form-label"><i class="bi bi-person-fill me-2 text-warning"></i>Nombres</label>
-              <div>
-                <input #nombreInput type="text" class="custom-input" [class.input-editable]="modoEdicion" [class.input-locked]="!modoEdicion"
-                       [value]="cliente.nombre" [readonly]="!modoEdicion">
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label"><i class="bi bi-person-badge-fill me-2 text-warning"></i>Apellidos</label>
-              <div>
-                <input #apellidoInput type="text" class="custom-input" [class.input-editable]="modoEdicion" [class.input-locked]="!modoEdicion"
-                       [value]="cliente.apellido" [readonly]="!modoEdicion">
-              </div>
-            </div>
-            
-            <div class="col-12">
-               <label class="form-label"><i class="bi bi-envelope-at-fill me-2 text-warning"></i>Correo Electrónico</label>
-               <div>
-                 <input type="email" class="custom-input bg-light" [value]="cliente.correo" readonly>
-               </div>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label"><i class="bi bi-telephone-fill me-2 text-warning"></i>Teléfono</label>
-              <div>
-                <input #telefonoInput type="text" class="custom-input" [class.input-editable]="modoEdicion" [class.input-locked]="!modoEdicion"
-                       [value]="cliente.telefono" [readonly]="!modoEdicion">
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label"><i class="bi bi-card-text me-2 text-warning"></i>Documento</label>
-              <div>
-                <input #documentoInput type="text" class="custom-input bg-light" [value]="cliente.numeroDocumento" readonly>
-              </div>
-            </div>
-
-            <div class="col-12 border-top pt-3 mt-3">
-              <label class="form-label text-warning small fw-bold"><i class="bi bi-geo-alt-fill me-2"></i>DIRECCIÓN DE ENTREGA</label>
-              <div class="mb-3">
-                <input #direccionInput type="text" class="custom-input" [class.input-editable]="modoEdicion" [class.input-locked]="!modoEdicion"
-                       [value]="cliente.direccion" [readonly]="!modoEdicion">
-              </div>
-            </div>
-
-            <div class="col-12">
-              <label class="form-label"><i class="bi bi-signpost-split-fill me-2 text-warning"></i>Referencia</label>
-              <div>
-                <input #referenciaInput type="text" class="custom-input" [class.input-editable]="modoEdicion" [class.input-locked]="!modoEdicion"
-                       placeholder="Referencia" [value]="cliente.referencia || ''" [readonly]="!modoEdicion">
-              </div>
-            </div>
-
-            <div class="col-12">
-              <label class="form-label"><i class="bi bi-building-fill me-2 text-warning"></i>Dirección Secundaria</label>
-              <div>
-                <input #direccion2Input type="text" class="custom-input" [class.input-editable]="modoEdicion" [class.input-locked]="!modoEdicion"
-                       placeholder="Opcional" [value]="cliente.direccion2 || ''" [readonly]="!modoEdicion">
-              </div>
-            </div>
-
-            <div class="col-12 mt-4 pt-3 border-top">
-                <button class="btn btn-outline-dark w-100 rounded-pill" (click)="abrirModalPassword()">
-                    <i class="bi bi-shield-lock me-2"></i> Cambiar Contraseña
-                </button>
-            </div>
-
-          </div>
-
-          <div class="d-flex justify-content-between align-items-center mt-5 pt-3 border-top">
-            <button class="btn-action btn-delete-account" [disabled]="guardando" (click)="confirmarEliminacion()">
-              <i class="bi bi-trash"></i> Eliminar Cuenta
-            </button>
-
-            <div class="d-flex gap-2">
-              <button class="btn-action btn-logout" *ngIf="!modoEdicion" (click)="abrirModalLogout()">
-                <i class="bi bi-box-arrow-right"></i> Salir
-              </button>
-
-              <button class="btn-action btn-save" *ngIf="modoEdicion" (click)="guardarCambios()" [disabled]="guardando">
-                <i class="bi bi-check-lg"></i> Guardar
-              </button>
-            </div>
-          </div>
-
-        </div>
+  <main class="profile-layout">
+    <section class="profile-form">
+      <div class="section-heading"><div><span>Información personal</span><h2>Tus datos</h2></div><i class="bi bi-person-vcard"></i></div>
+      <div class="form-grid">
+        <label><span>Nombres</span><div class="field"><i class="bi bi-person"></i><input #nombreInput type="text" [value]="cliente.nombre" [readonly]="!modoEdicion" [class.editable]="modoEdicion"></div></label>
+        <label><span>Apellidos</span><div class="field"><i class="bi bi-person"></i><input #apellidoInput type="text" [value]="cliente.apellido" [readonly]="!modoEdicion" [class.editable]="modoEdicion"></div></label>
+        <label class="wide"><span>Correo electrónico</span><div class="field locked"><i class="bi bi-envelope"></i><input type="email" [value]="cliente.correo" readonly><i class="bi bi-lock-fill suffix"></i></div></label>
+        <label><span>Teléfono</span><div class="field"><i class="bi bi-telephone"></i><input #telefonoInput type="text" [value]="cliente.telefono" [readonly]="!modoEdicion" [class.editable]="modoEdicion"></div></label>
+        <label><span>Documento</span><div class="field locked"><i class="bi bi-card-text"></i><input #documentoInput type="text" [value]="cliente.numeroDocumento" readonly><i class="bi bi-lock-fill suffix"></i></div></label>
       </div>
-    </div>
-  </div>
+
+      <div class="section-heading address"><div><span>Ubicaciones</span><h2>Direcciones de entrega</h2></div><i class="bi bi-geo-alt"></i></div>
+      <div class="form-grid">
+        <label class="wide"><span>Dirección principal</span><div class="field"><i class="bi bi-house-door"></i><input #direccionInput type="text" [value]="cliente.direccion" [readonly]="!modoEdicion" [class.editable]="modoEdicion"></div></label>
+        <label class="wide"><span>Referencia</span><div class="field"><i class="bi bi-signpost-split"></i><input #referenciaInput type="text" placeholder="Sin referencia" [value]="cliente.referencia || ''" [readonly]="!modoEdicion" [class.editable]="modoEdicion"></div></label>
+        <label class="wide"><span>Dirección secundaria</span><div class="field"><i class="bi bi-building"></i><input #direccion2Input type="text" placeholder="No registrada" [value]="cliente.direccion2 || ''" [readonly]="!modoEdicion" [class.editable]="modoEdicion"></div></label>
+      </div>
+
+      <div class="save-bar" *ngIf="modoEdicion"><span><i class="bi bi-info-circle"></i> Revisa tus cambios antes de guardar.</span><button type="button" (click)="guardarCambios()" [disabled]="guardando"><i class="bi bi-check-lg"></i>{{ guardando ? 'Guardando...' : 'Guardar cambios' }}</button></div>
+    </section>
+
+    <aside class="account-panel">
+      <div class="panel-title"><span>Cuenta</span><h2>Seguridad y sesión</h2></div>
+      <button type="button" class="account-action" (click)="abrirModalPassword()"><span class="action-icon"><i class="bi bi-shield-lock"></i></span><span><strong>Cambiar contraseña</strong><small>Actualiza tu clave de acceso</small></span><i class="bi bi-chevron-right"></i></button>
+      <button type="button" class="account-action" (click)="abrirModalLogout()"><span class="action-icon dark"><i class="bi bi-box-arrow-right"></i></span><span><strong>Cerrar sesión</strong><small>Salir de este dispositivo</small></span><i class="bi bi-chevron-right"></i></button>
+      <div class="danger-zone"><span>Zona de riesgo</span><p>Al eliminar tu cuenta perderás el acceso a tu historial.</p><button type="button" (click)="confirmarEliminacion()" [disabled]="guardando"><i class="bi bi-trash3"></i> Eliminar mi cuenta</button></div>
+    </aside>
+  </main>
 
   <div class="modal-backdrop" *ngIf="mostrarModalEliminar" (click)="cancelarEliminacion()"></div>
-  <div class="custom-modal text-center" *ngIf="mostrarModalEliminar">
-    <div class="mb-3 text-danger"><i class="bi bi-exclamation-octagon-fill" style="font-size: 3rem;"></i></div>
-    <h4 class="fw-bold mb-2">¿Eliminar Cuenta?</h4>
-    <p class="text-secondary mb-4">Perderás tu historial. No se puede deshacer.</p>
-    <div class="d-flex gap-3 justify-content-center">
-      <button class="btn btn-secondary rounded-pill px-4" (click)="cancelarEliminacion()">Cancelar</button>
-      <button class="btn btn-danger rounded-pill px-4" (click)="ejecutarEliminarCuenta()">Sí, Eliminar</button>
-    </div>
-  </div>
+  <section class="app-modal centered" *ngIf="mostrarModalEliminar"><div class="modal-icon danger"><i class="bi bi-trash3"></i></div><h2>¿Eliminar tu cuenta?</h2><p>Perderás tu historial y esta acción no se puede deshacer.</p><div class="modal-actions"><button type="button" class="secondary" (click)="cancelarEliminacion()">Cancelar</button><button type="button" class="danger-btn" (click)="ejecutarEliminarCuenta()">Sí, eliminar</button></div></section>
 
   <div class="modal-backdrop" *ngIf="mostrarModalLogout" (click)="cancelarLogout()"></div>
-  <div class="custom-modal text-center" *ngIf="mostrarModalLogout">
-    <div class="mb-3 text-dark"><i class="bi bi-box-arrow-right" style="font-size: 3rem;"></i></div>
-    <h4 class="fw-bold mb-2">¿Cerrar Sesión?</h4>
-    <p class="text-secondary mb-4">Tendrás que ingresar tus datos para pedir.</p>
-    <div class="d-flex gap-3 justify-content-center">
-      <button class="btn btn-light mb-3 border rounded-pill px-4" (click)="cancelarLogout()">Cancelar</button>
-      <button class="btn btn-dark mb-3 rounded-pill px-4" (click)="confirmarLogout()">Sí, Salir</button>
-    </div>
-  </div>
+  <section class="app-modal centered" *ngIf="mostrarModalLogout"><div class="modal-icon"><i class="bi bi-box-arrow-right"></i></div><h2>¿Cerrar sesión?</h2><p>Tendrás que ingresar nuevamente para realizar pedidos.</p><div class="modal-actions"><button type="button" class="secondary" (click)="cancelarLogout()">Cancelar</button><button type="button" class="primary" (click)="confirmarLogout()">Cerrar sesión</button></div></section>
 
   <div class="modal-backdrop" *ngIf="mostrarModalPassword" (click)="cancelarPassword()"></div>
-  <div class="custom-modal p-4" *ngIf="mostrarModalPassword" style="max-width: 400px;">
-    <div class="text-center mb-3">
-        <i class="bi bi-shield-lock-fill fs-1 text-warning"></i>
-    </div>
-    <h4 class="fw-bold mb-3 text-center">Seguridad</h4>
-    
-    <div class="mb-3">
-        <label class="small text-muted mb-1 fw-bold">Contraseña Actual</label>
-        <div class="input-group">
-            <input [type]="mostrarPassActual ? 'text' : 'password'" 
-                   class="form-control rounded-start-pill border-end-0" 
-                   [(ngModel)]="passActual" 
-                   placeholder="Tu clave actual">
-            <span class="input-group-text bg-white border-start-0 rounded-end-pill" 
-                  style="cursor: pointer;"
-                  (click)="togglePassActual()">
-                <i class="bi" [ngClass]="mostrarPassActual ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
-            </span>
-        </div>
-    </div>
-
-    <div class="mb-3">
-        <label class="small text-muted mb-1 fw-bold">Nueva Contraseña</label>
-        <div class="input-group">
-            <input [type]="mostrarPassNueva ? 'text' : 'password'" 
-                   class="form-control rounded-start-pill border-end-0" 
-                   [(ngModel)]="passNueva" 
-                   placeholder="Mínimo 8 caracteres, Mayús, núm, símb">
-            <span class="input-group-text bg-white border-start-0 rounded-end-pill" 
-                  style="cursor: pointer;"
-                  (click)="togglePassNueva()">
-                <i class="bi" [ngClass]="mostrarPassNueva ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
-            </span>
-        </div>
-    </div>
-
-    <div class="mb-4">
-        <label class="small text-muted mb-1 fw-bold">Confirmar Nueva Contraseña</label>
-        <div class="input-group">
-            <input [type]="mostrarPassConfirmar ? 'text' : 'password'" 
-                   class="form-control rounded-start-pill border-end-0" 
-                   [(ngModel)]="passConfirmar" 
-                   placeholder="Repite la nueva clave">
-            <span class="input-group-text bg-white border-start-0 rounded-end-pill" 
-                  style="cursor: pointer;"
-                  (click)="togglePassConfirmar()">
-                <i class="bi" [ngClass]="mostrarPassConfirmar ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
-            </span>
-        </div>
-    </div>
-
-    <div class="d-flex gap-2 justify-content-center">
-      <button class="btn btn-light border rounded-pill px-4" (click)="cancelarPassword()">Cancelar</button>
-      <button class="btn btn-dark rounded-pill px-4" (click)="ejecutarCambioPassword()">Actualizar</button>
-    </div>
-  </div>
-
+  <section class="app-modal password-modal" *ngIf="mostrarModalPassword">
+    <div class="modal-header"><div><span>Seguridad</span><h2>Cambiar contraseña</h2></div><button type="button" (click)="cancelarPassword()" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button></div>
+    <label><span>Contraseña actual</span><div class="password-field"><i class="bi bi-lock"></i><input [type]="mostrarPassActual ? 'text' : 'password'" [(ngModel)]="passActual" placeholder="Tu clave actual"><button type="button" (click)="togglePassActual()"><i class="bi" [ngClass]="mostrarPassActual ? 'bi-eye-slash' : 'bi-eye'"></i></button></div></label>
+    <label><span>Nueva contraseña</span><div class="password-field"><i class="bi bi-shield-lock"></i><input [type]="mostrarPassNueva ? 'text' : 'password'" [(ngModel)]="passNueva" placeholder="Mínimo 8 caracteres"><button type="button" (click)="togglePassNueva()"><i class="bi" [ngClass]="mostrarPassNueva ? 'bi-eye-slash' : 'bi-eye'"></i></button></div></label>
+    <label><span>Confirmar contraseña</span><div class="password-field"><i class="bi bi-check2-circle"></i><input [type]="mostrarPassConfirmar ? 'text' : 'password'" [(ngModel)]="passConfirmar" placeholder="Repite la nueva clave"><button type="button" (click)="togglePassConfirmar()"><i class="bi" [ngClass]="mostrarPassConfirmar ? 'bi-eye-slash' : 'bi-eye'"></i></button></div></label>
+    <div class="password-hint"><i class="bi bi-info-circle"></i> Usa mayúscula, minúscula, número y símbolo.</div>
+    <button type="button" class="primary full" (click)="ejecutarCambioPassword()">Actualizar contraseña</button>
+  </section>
 </div>

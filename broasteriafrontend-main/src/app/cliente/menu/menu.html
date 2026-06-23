@@ -1,61 +1,115 @@
 <div class="main-wrapper">
-
-  <div class="orange-background-shape"></div>
-
-  <nav class="custom-navbar d-flex justify-content-end align-items-center p-4 position-relative" style="z-index: 10;">
-    <div class="nav-links d-flex gap-4 align-items-center">
-      <a href="#" class="nav-item" (click)="inicio($event)">INICIO</a>
-      <a href="#" class="nav-item" (click)="carrito($event)"><i class="bi bi-cart-fill"></i> CARRITO</a>
-      <a href="#" class="nav-item" (click)="historial($event)">HISTORIAL</a>
-      <div class="profile-btn" (click)="abrirPerfil()"><i class="bi-person-fill fs-5"></i></div>
+  <nav class="custom-navbar">
+    <div class="nav-brand" aria-label="D'licias Fast Food">
+      <img src="logo.png" alt="D'licias Fast Food">
+      <span>D'licias <strong>Fast Food</strong></span>
+    </div>
+    <div class="nav-links">
+      <a href="#" class="nav-item active" (click)="inicio($event)">
+        <i class="bi bi-house-door-fill"></i>
+        <span>Inicio</span>
+      </a>
+      <a href="#" class="nav-item" (click)="carrito($event)">
+        <i class="bi bi-bag-fill"></i>
+        <span>Carrito</span>
+      </a>
+      <a href="#" class="nav-item" (click)="historial($event)">
+        <i class="bi bi-receipt"></i>
+        <span>Historial</span>
+      </a>
+      <button class="nav-item profile-btn" type="button" (click)="abrirPerfil()" aria-label="Abrir perfil">
+        <i class="bi bi-person-fill"></i>
+        <span>Perfil</span>
+      </button>
     </div>
   </nav>
 
-  <div class="hero-section container-fluid">
-    <div class="row align-items-center" style="min-height: 500px;">
-      
-      <div class="col-md-5 ps-md-5">
-        <div class="brand-logo mb-3">
-          <img src="logo.png" alt="Logo" width="90">
+  <main>
+    <section class="hero-section">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <div class="hero-eyebrow">
+            Sabor hecho al momento
+          </div>
+          <h1>Tu antojo favorito, <span>más crujiente.</span></h1>
+          <p class="hero-description">
+            Pollo broaster, hamburguesas y mucho más, preparados para convertir cualquier momento en uno delicioso.
+          </p>
+          <div class="hero-actions">
+            <button class="btn-hero" type="button" (click)="irAlMenu()">
+              Ver el menú
+              <i class="bi bi-arrow-down"></i>
+            </button>
+            <div class="hero-proof">
+              <div class="proof-icon"><i class="bi bi-stars"></i></div>
+              <div>
+                <strong>Calidad premium</strong>
+                <span>Ingredientes seleccionados</span>
+              </div>
+            </div>
+          </div>
         </div>
-        
-        <p class="spicy-tag mb-1">- CALIDAD PREMIUM</p>
-        <h1 class="display-3 mb-3">D'LICIAS <br> FAST FOOD</h1>
-        <p class="text-secondary fw-medium mb-4" style="max-width: 400px; font-size: 1.1rem;">
-          ¿Hambre? Pide lo mejor. Pollo crujiente, hamburguesas monstruosas y el sabor que te encanta.
-        </p>
 
-        <div class="btn-hero text-decoration-none d-inline-flex align-items-center" 
-             (click)="irAlMenu()" 
-             style="cursor: pointer;">
-          ORDENAR AHORA <i class="bi bi-arrow-right-circle-fill ms-2"></i>
-        </div>
-
-        <div class="hero-thumbnails mt-5 d-flex gap-3">
-          <img src="hamburguesa_clasica.png" class="thumb-img" alt="1">
-          <img src="hamburguesa_royal.jpg" class="thumb-img" alt="2">
-          <img src="hamburguesa_monster.jpg" class="thumb-img" alt="3">
+        <div class="hero-visual">
+          <div class="hero-photo hero-photo-main">
+            <img src="hero-broaster.jpg" alt="Pollo broaster crujiente con papas">
+            <div class="photo-label">
+              <span>Favorito</span>
+              Pollo broaster
+            </div>
+          </div>
+          <div class="hero-photo hero-photo-secondary">
+            <img src="hero-hamburguesa.jpg" alt="Hamburguesa doble con queso">
+          </div>
+          <div class="hero-price">
+            <small>Desde</small>
+            <strong>S/ 6.00</strong>
+          </div>
+          <div class="hero-spark hero-spark-one"><i class="bi bi-star-fill"></i></div>
+          <div class="hero-spark hero-spark-two"><i class="bi bi-star-fill"></i></div>
         </div>
       </div>
+    </section>
 
-      <div class="col-md-7 text-center">
-        <img src="logo.png" class="hero-burger-img floating-anim" alt="Hero Burger">
+    <section class="benefits-strip" aria-label="Beneficios">
+      <div class="benefit">
+        <i class="bi bi-lightning-charge-fill"></i>
+        <div><strong>Rápido</strong><span>Tu pedido sin vueltas</span></div>
       </div>
-    </div>
-  </div>
-
-  <div class="products-bg" id="menu-abajo">
-    <div class="container">
-      
-      <div class="text-center mb-5">
-        <h2 class="fw-bolder" style="font-size: 3rem; color: #222;">Nuestro <span style="color: #FF5E00;">Menú</span></h2>
-        <p class="text-muted">Elige tu categoría favorita y disfruta</p>
+      <div class="benefit">
+        <i class="bi bi-fire"></i>
+        <div><strong>Recién hecho</strong><span>Siempre caliente</span></div>
       </div>
+      <div class="benefit">
+        <i class="bi bi-emoji-smile-fill"></i>
+        <div><strong>Delicioso</strong><span>Sabor que se recuerda</span></div>
+      </div>
+    </section>
 
-      <div class="cat-broaster mb-5">
+    <section class="products-bg" id="menu-abajo">
+      <div class="container">
+        <div class="menu-intro">
+          <div>
+            <span class="section-kicker">Explora nuestros sabores</span>
+            <h2 class="menu-title">¿Qué se te <span>antoja hoy?</span></h2>
+            <p>Selecciona una categoría y agrega tus favoritos al carrito.</p>
+          </div>
+          <div class="category-nav" aria-label="Categorías del menú">
+            <a href="#broaster"><i class="bi bi-fire"></i> Broaster</a>
+            <a href="#hamburguesas"><i class="bi bi-circle-fill"></i> Hamburguesas</a>
+            <a href="#caldos"><i class="bi bi-cup-hot-fill"></i> Caldos</a>
+            <a href="#extras"><i class="bi bi-plus-circle-fill"></i> Extras</a>
+            <a href="#bebidas"><i class="bi bi-cup-straw"></i> Bebidas</a>
+          </div>
+        </div>
+
+      <div class="menu-category cat-broaster" id="broaster">
         <div class="section-header">
-          <div class="section-line"></div>
-          <h4>Broaster</h4>
+          <div>
+            <span>El clásico de la casa</span>
+            <h3>Pollo Broaster</h3>
+          </div>
+          <i class="bi bi-arrow-down-right"></i>
         </div>
         
         <div class="row g-4">
@@ -67,7 +121,6 @@
               <h5 class="card-title">Pollo Pierna</h5>
               <small class="desc-text">Crujiente y jugoso</small>
 
-              <!-- Precio dinámico -->
               <div class="price-badge">{{ getPrice(1) }}</div>
 
               <div class="soldout-badge" *ngIf="isOutOfStock(1)">AGOTADO</div>
@@ -112,10 +165,13 @@
         </div>
       </div>
 
-      <div class="cat-burger mb-5">
+      <div class="menu-category cat-burger" id="hamburguesas">
         <div class="section-header">
-          <div class="section-line"></div>
-          <h4>Hamburguesas</h4>
+          <div>
+            <span>Grandes, jugosas y contundentes</span>
+            <h3>Hamburguesas</h3>
+          </div>
+          <i class="bi bi-arrow-down-right"></i>
         </div>
 
         <div class="row g-4">
@@ -162,10 +218,13 @@
         </div>
       </div>
 
-      <div class="cat-caldos mb-5">
+      <div class="menu-category cat-caldos" id="caldos">
         <div class="section-header">
-          <div class="section-line"></div>
-          <h4>Caldos</h4>
+          <div>
+            <span>Calientes y reconfortantes</span>
+            <h3>Caldos</h3>
+          </div>
+          <i class="bi bi-arrow-down-right"></i>
         </div>
 
         <div class="row g-4">
@@ -192,10 +251,13 @@
         </div>
       </div>
 
-      <div class="cat-extra mb-5">
+      <div class="menu-category cat-extra" id="extras">
         <div class="section-header">
-          <div class="section-line"></div>
-          <h4>Extras</h4>
+          <div>
+            <span>El complemento perfecto</span>
+            <h3>Extras</h3>
+          </div>
+          <i class="bi bi-arrow-down-right"></i>
         </div>
 
         <div class="row g-4">
@@ -242,10 +304,13 @@
         </div>
       </div>
 
-      <div class="cat-bebidas mb-5">
+      <div class="menu-category cat-bebidas" id="bebidas">
         <div class="section-header">
-          <div class="section-line"></div>
-          <h4>Bebidas</h4>
+          <div>
+            <span>Para acompañar tu pedido</span>
+            <h3>Bebidas</h3>
+          </div>
+          <i class="bi bi-arrow-down-right"></i>
         </div>
         
         <div class="row g-4">
@@ -317,8 +382,25 @@
         </div>
       </div>
 
-    </div>
-  </div>
+      </div>
+    </section>
+
+    <section class="closing-banner">
+      <div class="closing-copy">
+        <img src="logo.png" alt="">
+        <div>
+          <span>¿Ya elegiste?</span>
+          <h2>Hoy se come delicioso.</h2>
+        </div>
+      </div>
+      <button type="button" (click)="irAlMenu()">Elegir mi pedido <i class="bi bi-arrow-up-right"></i></button>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>D'licias Fast Food</span>
+    <p>Pollo crujiente, hamburguesas y más.</p>
+  </footer>
 
   <button class="scroll-top-btn" [class.show-scroll]="showScrollButton" (click)="volverArriba()">
     <i class="bi bi-arrow-up-short"></i>
@@ -342,7 +424,7 @@
           </p>
           
           <div class="d-grid gap-2">
-            <button class="btn btn-warning fw-bold text-white py-2" routerLink="/ini-cliente">
+            <button class="btn login-primary-btn fw-bold py-2" routerLink="/ini-cliente">
               Iniciar Sesión
             </button>
             <button class="btn btn-light text-secondary fw-bold py-2" (click)="cerrarModal()">

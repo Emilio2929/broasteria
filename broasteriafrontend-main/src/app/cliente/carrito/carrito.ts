@@ -143,7 +143,15 @@ export class Carrito implements OnInit {
   cargarTipos() {
     this.http.get(environment.apiUrl + '/tipos/comprobantes').subscribe({
       next: (res: any) => {
-        this.tiposComprobante = res;
+        const tipos = Array.isArray(res) ? res : [];
+        this.tiposComprobante = Array.from(
+          new Map(
+            tipos.map((tipo: any) => [
+              String(tipo.nombreTipoComprobante || '').trim().toLowerCase(),
+              tipo
+            ])
+          ).values()
+        );
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Error tipos/comprobantes', err)

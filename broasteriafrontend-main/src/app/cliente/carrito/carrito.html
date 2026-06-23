@@ -1,202 +1,156 @@
-<div class="main-wrapper">
-
-  <div class="orange-header-bg"></div>
-
-  <nav class="custom-navbar d-flex justify-content-end align-items-center">
-    <div class="nav-links d-flex gap-4 align-items-center">
-      <a href="#" class="nav-item" (click)="inicio($event)">INICIO</a>
-      <a href="#" class="nav-item active" (click)="carritoLink($event)">
-        <i class="bi bi-cart-fill"></i> CARRITO
-      </a>
-      <a href="#" class="nav-item" (click)="historial($event)">HISTORIAL</a>
-      <div class="profile-btn" (click)="abrirPerfil()">
-        <i class="bi-person-fill fs-5"></i>
-      </div>
+<div class="client-page">
+  <nav class="client-nav">
+    <div class="brand">
+      <img src="logo.png" alt="D'licias Fast Food">
+      <span>D'licias <strong>Fast Food</strong></span>
+    </div>
+    <div class="nav-actions">
+      <a href="#" (click)="inicio($event)"><i class="bi bi-house-door-fill"></i><span>Inicio</span></a>
+      <a href="#" class="active" (click)="carritoLink($event)"><i class="bi bi-bag-fill"></i><span>Carrito</span></a>
+      <a href="#" (click)="historial($event)"><i class="bi bi-receipt"></i><span>Historial</span></a>
+      <button class="profile-btn" type="button" (click)="abrirPerfil()" aria-label="Abrir perfil"><i class="bi bi-person-fill"></i><span>Perfil</span></button>
     </div>
   </nav>
 
-  <div class="container content-container">
-    <h1 class="page-title">Tu Pedido</h1>
-    <div class="row g-4">
-      <div class="col-lg-8">        
-        <div *ngIf="carrito.length === 0" class="text-center py-5 bg-white rounded-4 shadow-sm">
-          <img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png" width="100" class="mb-3 opacity-50">
-          <h4 class="text-muted fw-bold">Tu carrito está vacío</h4>
-          <p class="text-secondary mb-4">¿Hambre? Ve al menú y pide algo delicioso.</p>
-          <button class="btn btn-checkout" style="width: auto; padding: 10px 30px;" (click)="inicio($event)">
-            Ir al Menú
-          </button>
-        </div>
-
-        <div *ngFor="let p of carrito; let i = index" class="cart-item-card">
-          
-          <img [src]="p.imagen" [alt]="p.nombre" class="item-img">
-          
-          <div class="flex-grow-1 ms-2">
-            <div class="d-flex justify-content-between align-items-start">
-              <div>
-                <h5 class="m-0">{{ p.nombre }}</h5>
-                <span class="item-price">S/ {{ p.precio | number:'1.2-2' }}</span>
-              </div>
-              <i class="bi bi-trash-fill icon-trash fs-5" (click)="eliminarProducto(i)" title="Eliminar"></i>
-            </div>
-
-            <div class="mt-3">
-              <input type="text" class="custom-input" placeholder="Opcional: Sin cremas, picante..." [(ngModel)]="p.detalleExtra">
-            </div>
-          </div>
-
-          <div class="d-flex flex-column align-items-end gap-2 ms-3">
-            <div class="qty-control">
-              <button class="btn-qty" (click)="disminuirCantidad(i)" [disabled]="p.cantidad <= 1">-</button>
-              <span class="qty-val">{{ p.cantidad }}</span>
-              <button class="btn-qty" (click)="aumentarCantidad(i)">+</button>
-            </div>
-            <div class="fw-bold text-dark mt-1">
-              Sub: S/ {{ (p.precio * p.cantidad) | number:'1.2-2' }}
-            </div>
-          </div>
-
-        </div> </div>
-
-      <div class="col-lg-4" *ngIf="carrito.length > 0">
-        <div class="summary-card">
-<!-- Dirección y Referencia -->
-<div class="delivery-box mb-4">
-
-  <h5 class="fw-bold mb-3" style="color:#ff7a00;">Datos de Entrega</h5>
-
-  <!-- Dirección -->
-  <label class="fw-semibold small">Dirección</label>
-  <select class="form-select rounded-pill py-2 mb-2"
-          [(ngModel)]="direccionSeleccionada"
-          (change)="direccionSeleccionada === 'Añadir nueva dirección...' ? agregarNuevaDireccion() : null">
-
-    <option value="" disabled selected>Selecciona una dirección</option>
-    <option *ngFor="let dir of direccionesGuardadas" [value]="dir">
-      {{ dir }}
-    </option>
-  </select>
-
-  <!-- Referencia -->
-  <label class="fw-semibold small mt-3">Referencia</label>
-  <input type="text"
-         class="form-control rounded-pill py-2"
-         placeholder="Ej. Casa verde, portón negro..."
-         [(ngModel)]="referenciaEntrega">
-
-</div>
-
-          <div class="summary-row total-row">
-            <span>TOTAL</span>
-            <span style="color: var(--primary-orange);">S/ {{ total | number:'1.2-2' }}</span>
-          </div>
-
-          <button class="btn-checkout" (click)="realizarPedido()" [disabled]="guardando">
-            {{ guardando ? 'Procesando...' : 'IR A PAGAR' }} <i class="bi bi-arrow-right ms-2"></i>
-          </button>
-
-          <button class="btn-continue" (click)="vaciarCarrito()">
-            <i class="bi bi-trash"></i> Vaciar Carrito
-          </button>
-          
-          <button class="btn-continue border-0 mt-2" (click)="inicio($event)">
-            Seguir comprando
-          </button>
-        </div>
-      </div>
-
+  <header class="page-hero">
+    <div>
+      <span class="eyebrow">Tu selección</span>
+      <h1>Tu carrito</h1>
+      <p>Revisa tu pedido y completa los datos para recibirlo.</p>
     </div>
-  </div>
+    <div class="hero-summary">
+      <span>{{ carrito.length }}</span>
+      <div><strong>Productos</strong><small>en tu pedido</small></div>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <section class="empty-state" *ngIf="carrito.length === 0">
+      <div class="empty-icon"><i class="bi bi-bag"></i></div>
+      <span>Tu carrito está esperando</span>
+      <h2>Agrega algo delicioso</h2>
+      <p>Explora nuestra carta y elige tus favoritos.</p>
+      <button type="button" class="primary-btn compact" (click)="inicio($event)">Ver el menú <i class="bi bi-arrow-right"></i></button>
+    </section>
+
+    <div class="checkout-layout" *ngIf="carrito.length > 0">
+      <section class="cart-products">
+        <div class="section-heading">
+          <div><span>Resumen</span><h2>Productos elegidos</h2></div>
+          <button type="button" class="text-btn danger" (click)="vaciarCarrito()"><i class="bi bi-trash3"></i> Vaciar</button>
+        </div>
+
+        <article class="cart-item" *ngFor="let p of carrito; let i = index">
+          <img [src]="p.imagen" [alt]="p.nombre">
+          <div class="item-content">
+            <div class="item-top">
+              <div><h3>{{ p.nombre }}</h3><span>S/ {{ p.precio | number:'1.2-2' }} c/u</span></div>
+              <button type="button" class="icon-btn remove" (click)="eliminarProducto(i)" aria-label="Eliminar producto"><i class="bi bi-trash3"></i></button>
+            </div>
+            <label class="note-field">
+              <i class="bi bi-pencil"></i>
+              <input type="text" placeholder="Indicaciones especiales (opcional)" [(ngModel)]="p.detalleExtra">
+            </label>
+            <div class="item-bottom">
+              <div class="qty-control">
+                <button type="button" (click)="disminuirCantidad(i)" [disabled]="p.cantidad <= 1" aria-label="Disminuir cantidad"><i class="bi bi-dash"></i></button>
+                <span>{{ p.cantidad }}</span>
+                <button type="button" (click)="aumentarCantidad(i)" aria-label="Aumentar cantidad"><i class="bi bi-plus"></i></button>
+              </div>
+              <strong>S/ {{ (p.precio * p.cantidad) | number:'1.2-2' }}</strong>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <aside class="order-panel">
+        <div class="panel-heading"><span>Entrega</span><h2>Completa tu pedido</h2></div>
+        <label class="field-label" for="direccion">Dirección</label>
+        <div class="select-field">
+          <i class="bi bi-geo-alt"></i>
+          <select id="direccion" [(ngModel)]="direccionSeleccionada" (change)="direccionSeleccionada === 'Añadir nueva dirección...' ? agregarNuevaDireccion() : null">
+            <option value="" disabled>Selecciona una dirección</option>
+            <option *ngFor="let dir of direccionesGuardadas" [value]="dir">{{ dir }}</option>
+          </select>
+        </div>
+
+        <label class="field-label" for="referencia">Referencia</label>
+        <div class="input-field">
+          <i class="bi bi-signpost-split"></i>
+          <input id="referencia" type="text" placeholder="Ej. Portón negro, segundo piso" [(ngModel)]="referenciaEntrega">
+        </div>
+
+        <div class="total-box">
+          <span>Total a pagar</span>
+          <strong>S/ {{ total | number:'1.2-2' }}</strong>
+        </div>
+
+        <button type="button" class="primary-btn" (click)="realizarPedido()" [disabled]="guardando">
+          {{ guardando ? 'Procesando...' : 'Ir a pagar' }} <i class="bi bi-arrow-right"></i>
+        </button>
+        <button type="button" class="secondary-btn" (click)="inicio($event)"><i class="bi bi-arrow-left"></i> Seguir comprando</button>
+        <div class="secure-note"><i class="bi bi-shield-check"></i><span><strong>Compra segura</strong> Tus datos están protegidos.</span></div>
+      </aside>
+    </div>
+  </main>
 
   <div class="modal-backdrop" *ngIf="mostrarModalVaciar" (click)="cerrarModalVaciar()"></div>
-  <div class="custom-modal text-center" *ngIf="mostrarModalVaciar">
-    <div class="mb-3 text-warning">
-      <i class="bi bi-exclamation-circle-fill" style="font-size: 3rem;"></i>
+  <section class="app-modal centered" *ngIf="mostrarModalVaciar">
+    <div class="modal-icon warning"><i class="bi bi-trash3"></i></div>
+    <h2>¿Vaciar el carrito?</h2>
+    <p>Se eliminarán todos los productos seleccionados.</p>
+    <div class="modal-actions">
+      <button type="button" class="secondary-btn" (click)="cerrarModalVaciar()">Cancelar</button>
+      <button type="button" class="danger-btn" (click)="confirmarVaciarCarrito()">Sí, vaciar</button>
     </div>
-    <h3 class="fw-bold mb-3">¿Estás seguro?</h3>
-    <p class="text-muted mb-4">Se eliminarán todos los productos de tu carrito.</p>
-    
-    <div class="d-flex gap-3 justify-content-center">
-      <button class="btn btn-secondary rounded-pill px-4" (click)="cerrarModalVaciar()">Cancelar</button>
-      <button class="btn btn-danger rounded-pill px-4" (click)="confirmarVaciarCarrito()">Sí, vaciar</button>
-    </div>
-  </div>
+  </section>
 
   <div class="modal-backdrop" *ngIf="mostrarModalPago" (click)="cerrarModalPago()"></div>
-  <div class="custom-modal" *ngIf="mostrarModalPago" (click)="$event.stopPropagation()">
-    
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h3 class="fw-bold m-0">Finalizar Compra</h3>
-      <button class="btn-close" (click)="cerrarModalPago()"></button>
+  <section class="app-modal" *ngIf="mostrarModalPago">
+    <div class="modal-header">
+      <div><span>Último paso</span><h2>Finalizar compra</h2></div>
+      <button type="button" class="icon-btn" (click)="cerrarModalPago()" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
     </div>
-
-    <form>
-      <p class="fw-bold text-muted mb-2 small">MÉTODO DE PAGO</p>
-      
-      <div class="payment-option-card mb-3" [class.selected]="pago.tipoPago == 1" (click)="pago.tipoPago = 1">
-        <input class="form-check-input radio-custom" type="radio" name="payMethod" [value]="1" [(ngModel)]="pago.tipoPago">
-        <div>
-          <h6 class="fw-bold m-0"><i class="bi bi-cash-coin me-2 text-success"></i>Efectivo</h6>
-          <small class="text-muted">Pagas al recibir (Contraentrega)</small>
-        </div>
-      </div>
-
-      <div class="payment-option-card mb-4" [class.selected]="pago.tipoPago == 2" (click)="pago.tipoPago = 2">
-        <input class="form-check-input radio-custom" type="radio" name="payMethod" [value]="2" [(ngModel)]="pago.tipoPago">
-        <div class="w-100">
-          <div class="d-flex justify-content-between">
-            <h6 class="fw-bold m-0"><i class="bi bi-credit-card-fill me-2 text-primary"></i>Online</h6>
-            <div class="d-flex gap-1">
-              <img src="yape.png" height="20">
-              <img src="plin.png" height="20">
-            </div>
-          </div>
-          <small class="text-muted">Tarjetas, Yape, Plin (Niubiz)</small>
-        </div>
-      </div>
-
-      <div class="mb-4">
-        <label class="fw-bold text-muted small mb-2">COMPROBANTE</label>
-        <select class="form-select rounded-3 py-2" [(ngModel)]="pago.tipoComprobante" name="comprobante" required>
-          <option value="" disabled selected>Selecciona Boleta o Factura</option>
-          <option *ngFor="let t of tiposComprobante" [value]="t.id">{{ t.nombreTipoComprobante }}</option>
-        </select>
-      </div>
-
-      <button class="btn-checkout mt-2" (click)="confirmarPago()">
-        {{ (pago.tipoPago == 1) ? 'Confirmar Pedido' : 'Pagar S/ ' + (total | number:'1.2-2') }}
-      </button>
-
-    </form>
-  </div>
+    <span class="field-label">Método de pago</span>
+    <label class="payment-option" [class.selected]="pago.tipoPago == 1">
+      <input type="radio" name="payMethod" [value]="1" [(ngModel)]="pago.tipoPago">
+      <span class="payment-icon cash"><i class="bi bi-cash-stack"></i></span>
+      <span><strong>Efectivo</strong><small>Paga cuando recibas tu pedido</small></span>
+      <i class="bi bi-check-circle-fill check"></i>
+    </label>
+    <label class="payment-option" [class.selected]="pago.tipoPago == 2">
+      <input type="radio" name="payMethod" [value]="2" [(ngModel)]="pago.tipoPago">
+      <span class="payment-icon card"><i class="bi bi-credit-card"></i></span>
+      <span><strong>Pago online</strong><small>Tarjeta, Yape o Plin con Niubiz</small></span>
+      <i class="bi bi-check-circle-fill check"></i>
+    </label>
+    <label class="field-label" for="comprobante">Comprobante</label>
+    <div class="select-field">
+      <i class="bi bi-receipt"></i>
+      <select id="comprobante" [(ngModel)]="pago.tipoComprobante" name="comprobante" required>
+        <option value="" disabled>Selecciona boleta o factura</option>
+        <option *ngFor="let t of tiposComprobante" [value]="t.id">{{ t.nombreTipoComprobante }}</option>
+      </select>
+    </div>
+    <button type="button" class="primary-btn modal-primary" (click)="confirmarPago()">
+      {{ pago.tipoPago == 1 ? 'Confirmar pedido' : 'Pagar S/ ' + (total | number:'1.2-2') }}
+    </button>
+  </section>
 
   <div class="modal-backdrop" *ngIf="mostrarModalNuevaDireccion" (click)="cerrarModalNuevaDireccion()"></div>
-<div class="custom-modal" *ngIf="mostrarModalNuevaDireccion" (click)="$event.stopPropagation()">
-    
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold m-0" style="color: var(--primary-orange);">Nueva Dirección</h3>
-        <button class="btn-close" (click)="cerrarModalNuevaDireccion()"></button>
+  <section class="app-modal" *ngIf="mostrarModalNuevaDireccion">
+    <div class="modal-header">
+      <div><span>Entrega</span><h2>Nueva dirección</h2></div>
+      <button type="button" class="icon-btn" (click)="cerrarModalNuevaDireccion()" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
     </div>
-
-    <p class="text-muted mb-3">
-        Ingresa la dirección exacta donde quieres recibir tu pedido.
-    </p>
-
-    <input type="text" 
-           class="direccion-input mb-4" 
-           placeholder="Ej: Av. Los Girasoles 123, Dpto. 4"
-           [(ngModel)]="nuevaDireccionInput"
-           (keyup.enter)="confirmarNuevaDireccion()">
-
-    <div class="d-flex gap-3 justify-content-end">
-        <button class="btn-cancelar-direccion" (click)="cerrarModalNuevaDireccion()">
-            Cancelar
-        </button>
-        <button class="btn-aceptar-direccion" (click)="confirmarNuevaDireccion()" [disabled]="!nuevaDireccionInput.trim()">
-            Aceptar
-        </button>
+    <p>Ingresa la dirección exacta donde quieres recibir tu pedido.</p>
+    <div class="input-field">
+      <i class="bi bi-geo-alt"></i>
+      <input type="text" placeholder="Av. Los Girasoles 123, Dpto. 4" [(ngModel)]="nuevaDireccionInput" (keyup.enter)="confirmarNuevaDireccion()">
     </div>
-</div>
-
+    <div class="modal-actions end">
+      <button type="button" class="secondary-btn" (click)="cerrarModalNuevaDireccion()">Cancelar</button>
+      <button type="button" class="primary-btn compact" (click)="confirmarNuevaDireccion()" [disabled]="!nuevaDireccionInput.trim()">Guardar</button>
+    </div>
+  </section>
 </div>

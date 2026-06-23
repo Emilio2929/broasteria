@@ -1,44 +1,82 @@
-<button class="chat-fab" (click)="toggleChat()">
+<button
+  class="chat-fab"
+  type="button"
+  (click)="toggleChat()"
+  [class.chat-open]="mostrarChat"
+  [attr.aria-label]="mostrarChat ? 'Cerrar asistente' : 'Abrir asistente'"
+  [attr.aria-expanded]="mostrarChat">
   <i class="bi bi-chat-dots-fill" *ngIf="!mostrarChat"></i>
   <i class="bi bi-x-lg" *ngIf="mostrarChat"></i>
 </button>
 
-<div class="chat-window shadow-lg" *ngIf="mostrarChat">
-  
+<section class="chat-window" *ngIf="mostrarChat" aria-label="Asistente PolloBot">
   <div class="chat-header">
-    <div class="d-flex align-items-center">
-      <div class="bot-avatar me-2">🤖</div>
-      <div>
-        <h6 class="m-0 fw-bold">PolloBot IA</h6>
-        <small class="text-white-50">En línea</small>
+    <div class="bot-identity">
+      <div class="bot-avatar">
+        <img src="logo.png" alt="">
+      </div>
+      <div class="bot-details">
+        <span class="bot-kicker">Asistente virtual</span>
+        <h2>PolloBot</h2>
+        <div class="bot-status">
+          <span></span>
+          En línea
+        </div>
       </div>
     </div>
+    <button class="header-close" type="button" (click)="toggleChat()" aria-label="Cerrar asistente">
+      <i class="bi bi-x-lg"></i>
+    </button>
   </div>
 
   <div class="chat-body">
-    <div *ngFor="let msg of mensajes" 
-         [ngClass]="{'msg-bot': msg.emisor === 'bot', 'msg-user': msg.emisor === 'user'}">
+    <div class="chat-intro">
+      <span>Hoy</span>
+      <p>Consulta sobre productos, pedidos o atención.</p>
+    </div>
+
+    <div
+      *ngFor="let msg of mensajes"
+      class="message-row"
+      [ngClass]="{'msg-bot': msg.emisor === 'bot', 'msg-user': msg.emisor === 'user'}">
+      <div class="message-avatar" *ngIf="msg.emisor === 'bot'">
+        <img src="logo.png" alt="">
+      </div>
       <div class="mensaje-burbuja">
         {{ msg.texto }}
       </div>
     </div>
-    
-    <div *ngIf="cargando" class="msg-bot">
+
+    <div *ngIf="cargando" class="message-row msg-bot">
+      <div class="message-avatar">
+        <img src="logo.png" alt="">
+      </div>
       <div class="mensaje-burbuja typing">
-        <span>.</span><span>.</span><span>.</span>
+        <span></span><span></span><span></span>
       </div>
     </div>
   </div>
 
   <div class="chat-footer">
-    <form (ngSubmit)="enviarMensaje()" class="d-flex gap-2">
-      <input type="text" class="form-control form-control-sm" 
-             [(ngModel)]="mensajeUsuario" name="msg" 
-             placeholder="Escribe tu consulta..." autocomplete="off">
-      <button type="submit" class="btn btn-primary btn-sm" [disabled]="!mensajeUsuario || cargando">
-        <i class="bi bi-send-fill"></i>
+    <form (ngSubmit)="enviarMensaje()">
+      <div class="message-input">
+        <i class="bi bi-chat-left-text"></i>
+        <input
+          type="text"
+          [(ngModel)]="mensajeUsuario"
+          name="msg"
+          placeholder="Escribe tu consulta..."
+          aria-label="Escribe tu consulta"
+          autocomplete="off">
+      </div>
+      <button
+        type="submit"
+        class="send-button"
+        [disabled]="!mensajeUsuario.trim() || cargando"
+        aria-label="Enviar mensaje">
+        <i class="bi bi-arrow-up"></i>
       </button>
     </form>
+    <span class="chat-note">PolloBot puede cometer errores. Verifica los datos importantes.</span>
   </div>
-
-</div>
+</section>
