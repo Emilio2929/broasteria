@@ -72,7 +72,8 @@ public class WebSecurityConfig {
                                                                 "/api/auth/recuperar-contrasena",
                                                                 "/api/auth/validar-codigo",
                                                                 "/clientes/cambiar-contrasena-perfil",
-                                                                "/api/auth/cambiar-contrasena")
+                                                                "/api/auth/cambiar-contrasena",
+                                                                "/health")
 
                                                 .permitAll()
 
