@@ -197,10 +197,19 @@ CREATE TABLE IF NOT EXISTS tipocomprobante_pago (
     ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
-INSERT IGNORE INTO tipocomprobante_pago (Nombre_TipoComprobante, ID_Serie)
-VALUES
-  ('Boleta', 1),
-  ('Factura', 2);
+INSERT INTO tipocomprobante_pago (Nombre_TipoComprobante, ID_Serie)
+SELECT 'Boleta', 1
+WHERE NOT EXISTS (
+  SELECT 1 FROM tipocomprobante_pago
+  WHERE LOWER(TRIM(Nombre_TipoComprobante)) = 'boleta'
+);
+
+INSERT INTO tipocomprobante_pago (Nombre_TipoComprobante, ID_Serie)
+SELECT 'Factura', 2
+WHERE NOT EXISTS (
+  SELECT 1 FROM tipocomprobante_pago
+  WHERE LOWER(TRIM(Nombre_TipoComprobante)) = 'factura'
+);
     
 CREATE TABLE IF NOT EXISTS pago (
   ID_Pago int NOT NULL AUTO_INCREMENT,

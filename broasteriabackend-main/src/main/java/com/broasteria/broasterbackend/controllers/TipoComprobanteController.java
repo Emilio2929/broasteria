@@ -18,6 +18,6 @@ public class TipoComprobanteController {
 
     @GetMapping
     public List<TipoComprobantePago> listar() {
-        return repository.findAll();
+        return repository.findCanonicalTypes();
     }
 }
