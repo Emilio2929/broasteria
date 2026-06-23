@@ -1,6 +1,7 @@
 package com.broasteria.broasterbackend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,10 +18,12 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Async
-    // Metodo para enviar correos simples
+    @Value("${spring.mail.username}")
+    private String remitente;
+
     public void enviarCorreo(String destinatario, String asunto, String cuerpo) {
         SimpleMailMessage mensaje = new SimpleMailMessage();
+        mensaje.setFrom(remitente);
         mensaje.setTo(destinatario);
         mensaje.setSubject(asunto);
         mensaje.setText(cuerpo);
