@@ -1,6 +1,7 @@
 package com.broasteria.broasterbackend.controllers;
 
 import com.broasteria.broasterbackend.dto.CrearPedidoRequest;
+import com.broasteria.broasterbackend.dto.HistorialPedidoResponse;
 import com.broasteria.broasterbackend.models.PedidoModel;
 import com.broasteria.broasterbackend.repositories.PedidoRepository.GananciaProducto;
 import com.broasteria.broasterbackend.repositories.PedidoRepository.ProMasVent;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,7 +40,12 @@ public class PedidoController {
             } catch (Exception e) {
                 System.err.println("Advertencia: Fallo envio correo: " + e.getMessage());
             }
-            return ResponseEntity.ok(nuevoPedido);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", nuevoPedido.getId());
+            response.put("numeroPedidoCliente", nuevoPedido.getNumeroPedidoCliente());
+            response.put("totalPedido", nuevoPedido.getTotalPedido());
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
@@ -57,7 +64,7 @@ public class PedidoController {
     }
 
     @GetMapping("/historial/{idCliente}")
-    public List<PedidoModel> historial(@PathVariable Integer idCliente) {
+    public List<HistorialPedidoResponse> historial(@PathVariable Integer idCliente) {
         return service.historialPorCliente(idCliente);
     }
 

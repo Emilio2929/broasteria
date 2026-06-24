@@ -1,19 +1,23 @@
 package com.broasteria.broasterbackend.services;
 
 import com.broasteria.broasterbackend.dto.CrearPedidoRequest;
+import com.broasteria.broasterbackend.dto.HistorialPedidoResponse;
 import com.broasteria.broasterbackend.models.*;
 import com.broasteria.broasterbackend.repositories.*;
 import com.broasteria.broasterbackend.repositories.PedidoRepository.GananciaProducto;
+import com.broasteria.broasterbackend.repositories.PedidoRepository.HistorialPedidoRow;
 import com.broasteria.broasterbackend.repositories.PedidoRepository.ProMasVent;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -155,11 +159,6 @@ public class PedidoService {
 
             pagoRepository.saveAndFlush(pago);
 
-            String nombreMetodo = tipoPago.getNombreTipoPago();
-
-            if (nombreMetodo.equalsIgnoreCase("Efectivo")) {
-                enviarNotificacionPago(pedidoGuardado.getId());
-            }
         }
 
         pedidoRealtimeService.publicar("PEDIDO_CREADO", pedidoGuardado);
@@ -169,25 +168,22 @@ public class PedidoService {
     // LIMPIA LA BASURA DE NIUBIZ
     private void limpiarPedidosPendientesNiubiz(Integer idCliente) {
         try {
-            // Buscamos pagos de este cliente
-            List<PagoModel> pagosCliente = pagoRepository.findByPedido_Cliente_Id(idCliente);
+            List<PagoModel> pagosPendientes = pagoRepository
+                    .findByPedido_Cliente_IdAndCodigoAutorizacion(idCliente, "PENDIENTE_NIUBIZ");
 
-            for (PagoModel pago : pagosCliente) {
-                // Si encontramos uno que se quedo en PENDIENTE_NIUBIZ
-                if ("PENDIENTE_NIUBIZ".equals(pago.getCodigoAutorizacion())) {
-                    System.out.println(">>> LIMPIANDO PEDIDO ABANDONADO ID: " + pago.getPedido().getId());
+            for (PagoModel pago : pagosPendientes) {
+                System.out.println(">>> LIMPIANDO PEDIDO ABANDONADO ID: " + pago.getPedido().getId());
 
-                    // devolvemos el stock de los productos
-                    for (DetallePedidoModel det : pago.getPedido().getDetalles()) {
-                        ProductoModel prod = det.getProducto();
-                        prod.setStock(prod.getStock() + det.getCantidad());
-                        productoRepository.save(prod);
-                    }
-
-                    // borramos el pago y el pedido
-                    pagoRepository.delete(pago);
-                    pedidoRepository.delete(pago.getPedido());
+                // devolvemos el stock de los productos
+                for (DetallePedidoModel det : pago.getPedido().getDetalles()) {
+                    ProductoModel prod = det.getProducto();
+                    prod.setStock(prod.getStock() + det.getCantidad());
+                    productoRepository.save(prod);
                 }
+
+                // borramos el pago y el pedido
+                pagoRepository.delete(pago);
+                pedidoRepository.delete(pago.getPedido());
             }
         } catch (Exception e) {
             System.err.println("Error limpiando pedidos pendientes: " + e.getMessage());
@@ -195,6 +191,8 @@ public class PedidoService {
     }
 
     // para enviar correos
+    @Async
+    @Transactional(readOnly = true)
     public void enviarNotificacionPago(Integer idPedido) {
         try {
             PedidoModel pedido = pedidoRepository.findById(idPedido).orElse(null);
@@ -275,13 +273,50 @@ public class PedidoService {
     }
 
     // Filtro visual para el historial
-    public List<PedidoModel> historialPorCliente(Integer idCliente) {
-        List<PedidoModel> pedidos = pedidoRepository.findByClienteIdOrderByFechaPedidoDesc(idCliente);
-        pedidos.removeIf(p -> {
-            PagoModel pago = pagoRepository.findTopByPedido_IdOrderByIdDesc(p.getId());
-            return pago != null && "PENDIENTE_NIUBIZ".equals(pago.getCodigoAutorizacion());
-        });
-        return pedidos;
+    @Transactional(readOnly = true)
+    public List<HistorialPedidoResponse> historialPorCliente(Integer idCliente) {
+        Map<Integer, HistorialPedidoBuilder> pedidos = new LinkedHashMap<>();
+
+        for (HistorialPedidoRow row : pedidoRepository.findHistorialVisibleRowsByClienteId(idCliente)) {
+            HistorialPedidoBuilder pedido = pedidos.computeIfAbsent(row.getId(), id -> new HistorialPedidoBuilder(row));
+
+            if (row.getDetalleId() != null) {
+                pedido.detalles().add(new HistorialPedidoResponse.DetalleResponse(
+                        row.getCantidad(),
+                        row.getSubtotal(),
+                        row.getDetalleExtra(),
+                        new HistorialPedidoResponse.ProductoResponse(
+                                row.getProductoId(),
+                                row.getProductoNombre())));
+            }
+        }
+
+        return pedidos.values().stream()
+                .map(HistorialPedidoBuilder::build)
+                .toList();
+    }
+
+    private record HistorialPedidoBuilder(
+            Integer id,
+            Integer numeroPedidoCliente,
+            LocalDateTime fechaPedido,
+            Double totalPedido,
+            HistorialPedidoResponse.EstadoResponse estado,
+            List<HistorialPedidoResponse.DetalleResponse> detalles) {
+
+        HistorialPedidoBuilder(HistorialPedidoRow row) {
+            this(
+                    row.getId(),
+                    row.getNumeroPedidoCliente(),
+                    row.getFechaPedido(),
+                    row.getTotalPedido(),
+                    new HistorialPedidoResponse.EstadoResponse(row.getEstadoId(), row.getEstadoNombre()),
+                    new ArrayList<>());
+        }
+
+        HistorialPedidoResponse build() {
+            return new HistorialPedidoResponse(id, numeroPedidoCliente, fechaPedido, totalPedido, estado, detalles);
+        }
     }
 
     public Optional<PedidoModel> BusquedaPorId(Integer id) {

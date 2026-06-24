@@ -109,7 +109,7 @@
   <section class="app-modal" *ngIf="mostrarModalPago">
     <div class="modal-header">
       <div><span>Último paso</span><h2>Finalizar compra</h2></div>
-      <button type="button" class="icon-btn" (click)="cerrarModalPago()" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
+      <button type="button" class="icon-btn" (click)="cerrarModalPago()" [disabled]="guardando" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
     </div>
     <span class="field-label">Método de pago</span>
     <label class="payment-option" [class.selected]="pago.tipoPago == 1">
@@ -132,8 +132,8 @@
         <option *ngFor="let t of tiposComprobante" [value]="t.id">{{ t.nombreTipoComprobante }}</option>
       </select>
     </div>
-    <button type="button" class="primary-btn modal-primary" (click)="confirmarPago()">
-      {{ pago.tipoPago == 1 ? 'Confirmar pedido' : 'Pagar S/ ' + (total | number:'1.2-2') }}
+    <button type="button" class="primary-btn modal-primary" (click)="confirmarPago()" [disabled]="guardando">
+      {{ guardando ? 'Procesando...' : (pago.tipoPago == 1 ? 'Confirmar pedido' : 'Pagar S/ ' + (total | number:'1.2-2')) }}
     </button>
   </section>
 

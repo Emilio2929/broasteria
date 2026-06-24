@@ -14,6 +14,8 @@ public interface PagoRepository extends JpaRepository<PagoModel, Integer> {
 
     List<PagoModel> findByPedido_Cliente_Id(Integer idCliente);
 
+    List<PagoModel> findByPedido_Cliente_IdAndCodigoAutorizacion(Integer idCliente, String codigoAutorizacion);
+
     PagoModel findTopByPedido_IdOrderByIdDesc(Integer idPedido);
 
     boolean existsByPedido_Id(Integer idPedido);

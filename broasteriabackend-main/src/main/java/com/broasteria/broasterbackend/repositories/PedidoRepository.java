@@ -14,6 +14,60 @@ import com.broasteria.broasterbackend.models.PedidoModel;
 public interface PedidoRepository extends JpaRepository<PedidoModel, Integer> {
     List<PedidoModel> findByClienteIdOrderByFechaPedidoDesc(Integer idCliente);
 
+    @Query("""
+                SELECT
+                    p.id AS id,
+                    p.numeroPedidoCliente AS numeroPedidoCliente,
+                    p.fechaPedido AS fechaPedido,
+                    p.totalPedido AS totalPedido,
+                    e.id AS estadoId,
+                    e.nombre AS estadoNombre,
+                    d.id AS detalleId,
+                    d.cantidad AS cantidad,
+                    d.subtotal AS subtotal,
+                    d.detalleExtra AS detalleExtra,
+                    pr.id AS productoId,
+                    pr.nombre AS productoNombre
+                FROM PedidoModel p
+                JOIN p.estado e
+                LEFT JOIN p.detalles d
+                LEFT JOIN d.producto pr
+                WHERE p.cliente.id = :idCliente
+                AND NOT EXISTS (
+                    SELECT 1 FROM PagoModel pago
+                    WHERE pago.pedido = p
+                    AND pago.codigoAutorizacion = 'PENDIENTE_NIUBIZ'
+                )
+                ORDER BY p.fechaPedido DESC, p.id DESC, d.id ASC
+            """)
+    List<HistorialPedidoRow> findHistorialVisibleRowsByClienteId(@Param("idCliente") Integer idCliente);
+
+    interface HistorialPedidoRow {
+        Integer getId();
+
+        Integer getNumeroPedidoCliente();
+
+        LocalDateTime getFechaPedido();
+
+        Double getTotalPedido();
+
+        Integer getEstadoId();
+
+        String getEstadoNombre();
+
+        Integer getDetalleId();
+
+        Integer getCantidad();
+
+        Double getSubtotal();
+
+        String getDetalleExtra();
+
+        Integer getProductoId();
+
+        String getProductoNombre();
+    }
+
     int countByClienteId(Integer idCliente);
 
     // Lista a todos los pedidos

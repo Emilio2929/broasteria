@@ -54,9 +54,7 @@ export class Historial implements OnInit, OnDestroy {
     }
 
     // CARGAR LA LISTA DE PEDIDOS 
-    setTimeout(() => {
-        this.cargarHistorial(true);
-    }, 100);
+    this.cargarHistorial(true);
 
     const clienteStr = localStorage.getItem('cliente');
     const cliente = clienteStr ? JSON.parse(clienteStr) : null;

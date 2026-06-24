@@ -54,11 +54,12 @@ export class Carrito implements OnInit {
   // CARGAR DIRECCIONES DEL CLIENTE
   cargarDireccionesCliente() {
     const cliente = JSON.parse(localStorage.getItem('cliente') || '{}');
+    const direcciones = [cliente.direccion, cliente.direccion2]
+      .map((direccion: string) => (direccion || '').trim())
+      .filter((direccion: string, index: number, lista: string[]) => direccion && lista.indexOf(direccion) === index);
 
-    this.direccionesGuardadas = [
-      cliente.direccion || "Sin dirección registrada",
-      "Añadir nueva dirección..."
-    ];
+    this.direccionesGuardadas = [...direcciones, "Añadir nueva dirección..."];
+    this.direccionSeleccionada = direcciones[0] || "";
   }
 
   agregarNuevaDireccion() {
@@ -66,14 +67,19 @@ export class Carrito implements OnInit {
     this.mostrarModalNuevaDireccion = true;
  }
   confirmarNuevaDireccion() {
-    const nueva = this.nuevaDireccionInput;
+    const nueva = this.nuevaDireccionInput.trim();
 
-    if (!nueva || nueva.trim() === "") {
+    if (!nueva) {
         this.notify("Dirección inválida", "Debe escribir una dirección.", "warn");
         return;
     }
 
-    this.direccionesGuardadas.unshift(nueva);
+    const opcionNuevaDireccion = "Añadir nueva dirección...";
+    this.direccionesGuardadas = [
+      nueva,
+      ...this.direccionesGuardadas.filter((direccion) => direccion !== nueva && direccion !== opcionNuevaDireccion),
+      opcionNuevaDireccion
+    ];
     this.direccionSeleccionada = nueva;
 
     this.mostrarModalNuevaDireccion = false;
@@ -161,6 +167,9 @@ export class Carrito implements OnInit {
   // VALIDACIÓN COMPLETA ANTES DE PAGAR
 
   confirmarPago() {
+    if (this.guardando) {
+      return;
+    }
 
     if (!this.direccionSeleccionada || this.direccionSeleccionada === "Añadir nueva dirección...") {
       this.notify("Falta dirección", "Selecciona o ingresa una dirección.", "warn");
@@ -192,6 +201,10 @@ export class Carrito implements OnInit {
   // ENVIAR ORDEN AL BACKEND
 
   enviarCompraBackend(tokenNiubiz: string | null = null, soloCrearPendiente: boolean = false) {
+    if (this.guardando) {
+      return;
+    }
+
     const cliente = JSON.parse(localStorage.getItem('cliente') || '{}');
 
     const compraRequest = {
@@ -278,7 +291,13 @@ export class Carrito implements OnInit {
     this.router.navigate(['/historial']);
   }
 
-  cerrarModalPago() { this.mostrarModalPago = false; }
+  cerrarModalPago() {
+    if (this.guardando) {
+      return;
+    }
+
+    this.mostrarModalPago = false;
+  }
   vaciarCarrito() { this.mostrarModalVaciar = true; }
   cerrarModalVaciar() { this.mostrarModalVaciar = false; }
 
