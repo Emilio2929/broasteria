@@ -1,6 +1,8 @@
 package com.broasteria.broasterbackend.services;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,18 @@ public class RolService {
     @Autowired
     RolRepository rolRepository;
 
-    // Lista de roles
     public ArrayList<RolModel> obtenerListadeRoles() {
-        return (ArrayList<RolModel>) rolRepository.findAll();
+        Map<String, RolModel> rolesUnicos = new LinkedHashMap<>();
+
+        for (RolModel rol : rolRepository.findAll()) {
+            String nombre = rol.getNombreRol() == null ? "" : rol.getNombreRol().trim().toLowerCase();
+
+            if (!nombre.isEmpty()) {
+                rolesUnicos.putIfAbsent(nombre, rol);
+            }
+        }
+
+        return new ArrayList<>(rolesUnicos.values());
     }
 
     // Crear un rol

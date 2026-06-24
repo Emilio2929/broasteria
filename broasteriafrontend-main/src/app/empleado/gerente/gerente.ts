@@ -99,10 +99,30 @@ export class Gerente implements OnInit, OnDestroy {
   cargarRol(): void {
     this.gerenteService.listarRoles().subscribe({
     next: (data) => {
-      this.roles = data.filter(r => r.idRol !== 1);
+      const rolesUnicos = new Map<string, rolmodel>();
+
+      data
+        .filter(r => r.idRol !== 1 && (r.nombreRol || '').trim().toLowerCase() !== 'sistema')
+        .forEach((rol) => {
+          const nombre = (rol.nombreRol || '').trim().toLowerCase();
+
+          if (nombre && !rolesUnicos.has(nombre)) {
+            rolesUnicos.set(nombre, rol);
+          }
+        });
+
+      this.roles = Array.from(rolesUnicos.values());
     },
       error: (err) => console.error('Error al cargar roles', err)
     });
+  }
+
+  compararRoles(a: rolmodel | null, b: rolmodel | null): boolean {
+    return a?.idRol === b?.idRol;
+  }
+
+  trackByRol(index: number, item: rolmodel): any {
+    return item.idRol || item.nombreRol || index;
   }
 
 

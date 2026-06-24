@@ -144,9 +144,9 @@
           </div>
 
           <div class="col-md-3">
-            <select class="form-select" [(ngModel)]="nuevoEmpleado.rol" name="nRol">
+            <select class="form-select" [(ngModel)]="nuevoEmpleado.rol" [compareWith]="compararRoles" name="nRol">
               <option [ngValue]="null" disabled>Cargo</option>
-              <option *ngFor="let r of roles" [ngValue]="r">{{ r.nombreRol }}</option>
+              <option *ngFor="let r of roles; trackBy: trackByRol" [ngValue]="r">{{ r.nombreRol }}</option>
             </select>
           </div>
 
