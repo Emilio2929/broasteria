@@ -77,7 +77,7 @@ public class ChatGeminiService {
 
             // ARMAMOS EL JSON para Groq (formato OpenAI)
             Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("model", "llama-3.1-8b-instant");
+            requestBody.put("model", "llama-3.3-70b-versatile");
             requestBody.put("messages", List.of(
                     Map.of("role", "system", "content", promptSistema),
                     Map.of("role", "user", "content", mensajeUsuario)));
