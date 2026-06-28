@@ -176,10 +176,7 @@ export class Carrito implements OnInit {
       return;
     }
 
-    if (!this.referenciaEntrega || this.referenciaEntrega.trim() === "") {
-      this.notify("Falta referencia", "Ingresa una referencia de entrega.", "warn");
-      return;
-    }
+
 
     if (!this.pago.tipoPago || !this.pago.tipoComprobante) {
       this.notify('Faltan datos', 'Selecciona método de pago y comprobante.', 'warn');
@@ -218,7 +215,7 @@ export class Carrito implements OnInit {
       idTipoPago: Number(this.pago.tipoPago),
       idTipoComprobante: Number(this.pago.tipoComprobante),
       direccionEntrega: this.direccionSeleccionada,
-      referenciaEntrega: this.referenciaEntrega
+      referenciaEntrega: this.referenciaEntrega || ''
     };
 
     this.guardando = true;
