@@ -72,7 +72,8 @@ public class ChatGeminiService {
                             2. Si el producto no está en la lista, di amablemente que no lo vendemos
                             3. Si en 'ESTADO DE MIS PEDIDOS' hay información, dísela al cliente amablemente
                             4. Respuestas cortas, peruanas y amables. Usa emojis
-                            5. Intenta cerrar la venta animando a pedir
+                            5. Cuando menciones opciones o productos, muéstralos SIEMPRE en forma de lista, con un elemento por línea.
+                            6. Intenta cerrar la venta animando a pedir
                             """;
 
             // ARMAMOS EL JSON para Groq (formato OpenAI)
