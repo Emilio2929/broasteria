@@ -45,7 +45,7 @@ export class Menu implements OnInit, OnDestroy {
 
   actualizarCantidadCarrito() {
     const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
-    this.cantidadCarrito = carrito.reduce((acc: number, item: any) => acc + item.cantidad, 0);
+    this.cantidadCarrito = carrito.length;
   }
 
   ngOnDestroy(): void {
