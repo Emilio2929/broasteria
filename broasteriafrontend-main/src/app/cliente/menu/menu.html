@@ -12,6 +12,7 @@
       <a href="#" class="nav-item" (click)="carrito($event)">
         <i class="bi bi-bag-fill"></i>
         <span>Carrito</span>
+        <span class="cart-badge" *ngIf="cantidadCarrito > 0">{{ cantidadCarrito }}</span>
       </a>
       <a href="#" class="nav-item" (click)="historial($event)">
         <i class="bi bi-receipt"></i>

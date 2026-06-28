@@ -79,6 +79,24 @@
   font-size: 0.8rem;
   font-weight: 700;
   transition: color 0.2s ease, background-color 0.2s ease;
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: var(--orange);
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 800;
+  box-shadow: 0 2px 5px rgba(255, 94, 0, 0.4);
 }
 
 .nav-item:hover,

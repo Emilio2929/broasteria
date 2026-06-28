@@ -18,6 +18,7 @@ export class Menu implements OnInit, OnDestroy {
   
   
   mostrarModalLogin = false; 
+  cantidadCarrito: number = 0; 
   
   //estructuras para stock y precio
   productStockMap: { [id: number]: number } = {};
@@ -39,6 +40,12 @@ export class Menu implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchProductsData();
+    this.actualizarCantidadCarrito();
+  }
+
+  actualizarCantidadCarrito() {
+    const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    this.cantidadCarrito = carrito.reduce((acc: number, item: any) => acc + item.cantidad, 0);
   }
 
   ngOnDestroy(): void {
@@ -122,6 +129,7 @@ export class Menu implements OnInit, OnDestroy {
     }
 
     localStorage.setItem('carrito', JSON.stringify(carrito));
+    this.actualizarCantidadCarrito();
     this.notify('Agregado al carrito', nombre, 'success');
   }
 
