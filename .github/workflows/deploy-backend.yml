@@ -1,0 +1,40 @@
+name: Deploy Backend to Azure
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'broasteriabackend-main/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Copy files to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AZURE_HOST }}
+          username: ${{ secrets.AZURE_USER }}
+          key: ${{ secrets.AZURE_SSH_KEY }}
+          source: "broasteriabackend-main/"
+          target: "/home/${{ secrets.AZURE_USER }}/broasteriabackend"
+          strip_components: 1
+          overwrite: true
+
+      - name: Execute deployment commands via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AZURE_HOST }}
+          username: ${{ secrets.AZURE_USER }}
+          key: ${{ secrets.AZURE_SSH_KEY }}
+          script: |
+            cd ~/broasteriabackend
+            # Aseguramos que el archivo .env exista para que no falle Docker
+            touch .env
+            # Reconstruimos la imagen y levantamos los contenedores en segundo plano
+            sudo docker compose up -d --build

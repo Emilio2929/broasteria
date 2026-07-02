@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: broasteria_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: defaultdb
+      MYSQL_USER: avnadmin
+      MYSQL_PASSWORD: AVNS_hPRVeX3z56brYnXut15
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      # Automáticamente ejecuta el script SQL cuando se crea la BD por primera vez
+      - ./broasteria.sql:/docker-entrypoint-initdb.d/broasteria.sql
+    command: --default-authentication-plugin=mysql_native_password
+
+  backend:
+    build: .
+    container_name: broasteria_backend
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      # Conecta usando el nombre del servicio 'db' definido arriba
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/defaultdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=avnadmin
+      - SPRING_DATASOURCE_PASSWORD=AVNS_hPRVeX3z56brYnXut15
+    depends_on:
+      - db
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: broasteria_caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    command: caddy reverse-proxy --from 172-184-131-149.nip.io --to backend:8080
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
