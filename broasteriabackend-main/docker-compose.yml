@@ -28,6 +28,7 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+      - SQL_INIT_MODE=never
       # Conecta usando el nombre del servicio 'db' definido arriba
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/defaultdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=avnadmin
