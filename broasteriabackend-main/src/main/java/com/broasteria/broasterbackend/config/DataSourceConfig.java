@@ -23,7 +23,7 @@ public class DataSourceConfig {
     private String masterPassword;
 
     @Bean
-    public DataSource dataSource() {
+    public TenantRoutingDataSource dataSource() {
         TenantRoutingDataSource routingDataSource = new TenantRoutingDataSource();
         Map<Object, Object> dataSourceMap = new HashMap<>();
 
