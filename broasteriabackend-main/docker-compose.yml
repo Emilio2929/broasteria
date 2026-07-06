@@ -31,8 +31,8 @@ services:
       - SQL_INIT_MODE=never
       # Conecta usando el nombre del servicio 'db' definido arriba
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/defaultdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      - SPRING_DATASOURCE_USERNAME=avnadmin
-      - SPRING_DATASOURCE_PASSWORD=AVNS_hPRVeX3z56brYnXut15
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
     depends_on:
       - db
 
