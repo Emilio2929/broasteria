@@ -1,0 +1,20 @@
+{
+    # Opcional: Proporcionar un email para Let's Encrypt ayuda a evitar limites de tasa
+    email admin@tusistema.com
+}
+
+# Bloque 1: Ruta de la API (Backend de Spring Boot)
+api.172-184-131-149.nip.io {
+    reverse_proxy backend:8080
+}
+
+# Bloque 2: Ruta del Frontend (Cualquier otro subdominio)
+# Caddy automaticamente aprovisionara certificados para los subdominios que se usen.
+*.172-184-131-149.nip.io {
+    reverse_proxy frontend:80
+}
+
+# Bloque 3: Ruta para el dominio base (Opcional, redirige o sirve el frontend)
+172-184-131-149.nip.io {
+    reverse_proxy frontend:80
+}
