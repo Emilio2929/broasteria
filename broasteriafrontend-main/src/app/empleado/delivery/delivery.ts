@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import {  } from '@angular/common/http';
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { DeliveryService } from '../../services/delivery.service';
@@ -10,7 +10,7 @@ import { PedidoRealtimeService } from '../../services/pedido-realtime.service';
 @Component({
   selector: 'app-delivery',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule,  FormsModule],
   templateUrl: './delivery.html',
   styleUrls: ['./delivery.css'],
 })

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import {  } from '@angular/common/http';
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { MeseroService } from '../../services/mesero.service';
@@ -11,7 +11,7 @@ import { PedidoRealtimeService } from '../../services/pedido-realtime.service';
 @Component({
   selector: 'app-mesero',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule,  FormsModule],
   templateUrl: './mesero.html',
   styleUrls: ['./mesero.css'],
 })

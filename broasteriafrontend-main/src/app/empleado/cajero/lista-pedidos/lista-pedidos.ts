@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CajeroService } from '../../../services/cajero.service';
-import { HttpClientModule } from '@angular/common/http';
+import {  } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { EmpleadoService } from '../../../services/empleado.service';
@@ -10,7 +10,7 @@ import { PedidoRealtimeService } from '../../../services/pedido-realtime.service
 @Component({
   selector: 'app-lista-pedidos',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule, ],
   templateUrl: './lista-pedidos.html',
   styleUrls: ['./lista-pedidos.css']
 })

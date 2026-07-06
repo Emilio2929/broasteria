@@ -2,7 +2,7 @@ import { environment } from 'src/environments';
 import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient,  } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ClienteService } from '../../services/cliente.service'; 
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import {  } from '@angular/common/http';
 import { EmpleadoService } from '../../services/empleado.service';
 import { ChefService } from '../../services/chef.service'; 
 import { Subscription } from 'rxjs';
@@ -10,7 +10,7 @@ import { PedidoRealtimeService } from '../../services/pedido-realtime.service';
 @Component({
   selector: 'app-chef',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule, ],
   templateUrl: './chef.html',
   styleUrls: ['./chef.css']
 })

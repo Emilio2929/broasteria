@@ -1,7 +1,7 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import {  } from '@angular/common/http';
 import { CajeroService } from '../../services/cajero.service';
 import { Router } from '@angular/router';
 import { EmpleadoService } from '../../services/empleado.service';
@@ -9,7 +9,7 @@ import { EmpleadoService } from '../../services/empleado.service';
 @Component({
   selector: 'app-cajero',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, ],
   templateUrl: './cajero.html',
   styleUrls: ['./cajero.css']
 })

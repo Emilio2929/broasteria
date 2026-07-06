@@ -8,7 +8,7 @@ import { Detalleditar } from './detalleditar/detalleditar';
 import { EmpleadoService } from '../../services/empleado.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import {  } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
@@ -16,7 +16,7 @@ import { MatTableModule } from '@angular/material/table';
 @Component({
   selector: 'app-gerente',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, MatButtonModule, MatIconModule, MatTableModule, MatDialogModule],
+  imports: [CommonModule, FormsModule,  MatButtonModule, MatIconModule, MatTableModule, MatDialogModule],
   templateUrl: './gerente.html',
   styleUrl: './gerente.css',
 })

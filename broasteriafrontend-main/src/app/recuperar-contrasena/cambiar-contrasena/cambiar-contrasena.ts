@@ -3,13 +3,13 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // <-- 1. 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient,  } from '@angular/common/http';
 import { finalize } from 'rxjs/operators'; 
 
 @Component({
   selector: 'app-cambiar-contrasena',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, ],
   templateUrl: './cambiar-contrasena.html',
   styleUrls: ['./cambiar-contrasena.css']
 })

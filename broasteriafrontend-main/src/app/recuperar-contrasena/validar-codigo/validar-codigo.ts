@@ -3,13 +3,13 @@ import { Component, ChangeDetectorRef } from '@angular/core'; // <--- 1. Importa
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient,  } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-validar-codigo',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, ],
   templateUrl: './validar-codigo.html',
   styleUrls: ['./validar-codigo.css']
 })
