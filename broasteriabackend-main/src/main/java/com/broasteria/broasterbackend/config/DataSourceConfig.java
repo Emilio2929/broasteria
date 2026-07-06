@@ -32,17 +32,16 @@ public class DataSourceConfig {
         dataSourceMap.put("db_master_admin", masterDataSource);
 
         /* 
-         * AQUI: Lógica dinámica para agregar más inquilinos (Tenants).
-         * En un entorno real, podrías consultar una tabla en 'db_master_admin' 
-         * para obtener la lista de clientes y sus URLs/Credenciales, 
-         * e iterar sobre ellos para agregarlos al dataSourceMap.
-         * 
-         * Ejemplo estático para el inquilino 'juan':
-         * DataSource juanDataSource = createDataSource(
-         *     "jdbc:mysql://[host]/bd_brosteria_juan?useSSL=false", 
-         *     masterUsername, masterPassword);
-         * dataSourceMap.put("juan", juanDataSource);
+         * CONFIGURACION DE PRUEBA (Hardcoded)
+         * Reemplazamos 'defaultdb' de la URL original por las bases de datos de los clientes
          */
+        String urlJuan = masterUrl.replace("defaultdb", "bd_brosteria_juan");
+        DataSource juanDataSource = createDataSource(urlJuan, masterUsername, masterPassword);
+        dataSourceMap.put("juan", juanDataSource);
+
+        String urlPedro = masterUrl.replace("defaultdb", "bd_brosteria_pedro");
+        DataSource pedroDataSource = createDataSource(urlPedro, masterUsername, masterPassword);
+        dataSourceMap.put("pedro", pedroDataSource);
 
         routingDataSource.setTargetDataSources(dataSourceMap);
         routingDataSource.setDefaultTargetDataSource(masterDataSource);
