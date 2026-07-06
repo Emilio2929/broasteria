@@ -29,7 +29,7 @@ public class ChatGeminiService {
     @Autowired
     private PedidoRepository pedidoRepository;
 
-    public String obtenerRespuestaIA(String mensajeUsuario, Integer idCliente) {
+    public String obtenerRespuestaIA(String mensajeUsuario, Integer idCliente, List<Map<String, String>> historial) {
         try {
             RestTemplate restTemplate = new RestTemplate();
 
@@ -81,9 +81,19 @@ public class ChatGeminiService {
             requestBody.put("model", "llama-3.1-8b-instant");
             requestBody.put("max_tokens", 300); // Límite para evitar errores de cuota (Error 429)
             requestBody.put("temperature", 0.7);
-            requestBody.put("messages", List.of(
-                    Map.of("role", "system", "content", promptSistema),
-                    Map.of("role", "user", "content", mensajeUsuario)));
+            List<Map<String, Object>> mensajesRequest = new ArrayList<>();
+            mensajesRequest.add(Map.of("role", "system", "content", promptSistema));
+            
+            if (historial != null) {
+                for (Map<String, String> msg : historial) {
+                    if (msg.get("role") != null && msg.get("content") != null) {
+                        mensajesRequest.add(Map.of("role", msg.get("role"), "content", msg.get("content")));
+                    }
+                }
+            }
+            mensajesRequest.add(Map.of("role", "user", "content", mensajeUsuario));
+
+            requestBody.put("messages", mensajesRequest);
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);

@@ -24,8 +24,14 @@ public class ChatController {
             idCliente = Integer.parseInt(payload.get("idCliente").toString());
         }
 
+        // Extraemos el historial de mensajes
+        java.util.List<Map<String, String>> historial = null;
+        if (payload.get("historial") != null) {
+            historial = (java.util.List<Map<String, String>>) payload.get("historial");
+        }
+
         // Se lo pasamos al servicio
-        String respuestaIA = chatService.obtenerRespuestaIA(mensaje, idCliente);
+        String respuestaIA = chatService.obtenerRespuestaIA(mensaje, idCliente, historial);
         return Collections.singletonMap("respuesta", respuestaIA);
     }
 }
