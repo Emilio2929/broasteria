@@ -27,24 +27,15 @@ public class DataSourceConfig {
         TenantRoutingDataSource routingDataSource = new TenantRoutingDataSource();
         Map<Object, Object> dataSourceMap = new HashMap<>();
 
-        // Configuración de la base de datos maestra (db_master_admin)
+        // 1. Crear conexión principal (Master DB)
         DataSource masterDataSource = createDataSource(masterUrl, masterUsername, masterPassword);
         dataSourceMap.put("db_master_admin", masterDataSource);
 
-        /* 
-         * CONFIGURACION DE PRUEBA (Hardcoded)
-         * Reemplazamos 'defaultdb' de la URL original por las bases de datos de los clientes
-         */
-        String urlJuan = masterUrl.replace("defaultdb", "bd_brosteria_juan");
-        DataSource juanDataSource = createDataSource(urlJuan, masterUsername, masterPassword);
-        dataSourceMap.put("juan", juanDataSource);
+        // Ya no hay hardcodeo. La creación de inquilinos como "juan" o "pedro"
+        // es ahora manejada dinámicamente en tiempo de ejecución por TenantProvisioningService
 
-        String urlPedro = masterUrl.replace("defaultdb", "bd_brosteria_pedro");
-        DataSource pedroDataSource = createDataSource(urlPedro, masterUsername, masterPassword);
-        dataSourceMap.put("pedro", pedroDataSource);
-
-        routingDataSource.setTargetDataSources(dataSourceMap);
-        routingDataSource.setDefaultTargetDataSource(masterDataSource);
+        // Inicializamos el RoutingDataSource
+        routingDataSource.init(masterDataSource, dataSourceMap);
 
         return routingDataSource;
     }

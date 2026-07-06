@@ -5,9 +5,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import com.broasteria.broasterbackend.services.TenantProvisioningService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Component
 public class TenantFilter implements Filter {
+
+    @Autowired
+    private TenantProvisioningService tenantProvisioningService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -19,6 +24,7 @@ public class TenantFilter implements Filter {
         String tenantId = req.getHeader("X-Tenant-ID");
         
         if (tenantId != null && !tenantId.isEmpty()) {
+            tenantProvisioningService.provisionTenantIfNeeded(tenantId);
             TenantContext.setCurrentTenant(tenantId);
         } else {
             TenantContext.setCurrentTenant("db_master_admin"); // Base de datos por defecto
