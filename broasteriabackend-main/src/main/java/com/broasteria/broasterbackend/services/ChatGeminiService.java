@@ -74,6 +74,7 @@ public class ChatGeminiService {
                             4. Respuestas cortas, peruanas y amables. Usa emojis
                             5. Cuando menciones opciones o productos, muéstralos SIEMPRE en forma de lista, con un elemento por línea.
                             6. Intenta cerrar la venta animando a pedir
+                            7. TÚ NO PUEDES TOMAR PEDIDOS DIRECTAMENTE. Si el cliente quiere pedir algo, sácale la cuenta del total (proforma) e indícale amablemente que debe añadir los productos al carrito de compras y finalizar su pedido a través de la plataforma web.
                             """;
 
             // ARMAMOS EL JSON para Groq (formato OpenAI)
