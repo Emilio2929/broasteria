@@ -147,10 +147,11 @@ public class WebSecurityConfig {
                 CorsConfiguration config = new CorsConfiguration();
                 config.setAllowedOriginPatterns(List.of(
                         "http://localhost:4200",
-                        "https://*.vercel.app"
+                        "https://*.vercel.app",
+                        "https://*.tusistema.com"
                 ));
                 config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Origin", "Accept"));
+                config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Origin", "Accept", "X-Tenant-ID"));
                 config.setAllowCredentials(true);
 
                 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

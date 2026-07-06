@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informe de Despliegue - D'licias Fast Food</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <style>
+        :root {
+            --primary: #d35400;
+            --secondary: #2c3e50;
+            --light-bg: #f9f9f9;
+            --border-color: #e0e0e0;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+        h1, h2, h3 {
+            color: var(--secondary);
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+        h2 {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            color: var(--primary);
+        }
+        .date {
+            text-align: center;
+            font-style: italic;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+        }
+        .section {
+            background-color: var(--light-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--primary);
+        }
+        .diagram-container {
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        code, pre {
+            font-family: Consolas, "Courier New", monospace;
+            background-color: #272822;
+            color: #f8f8f2;
+            border-radius: 4px;
+        }
+        code {
+            padding: 2px 6px;
+            font-size: 0.9em;
+        }
+        pre {
+            padding: 15px;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+        .alert {
+            background-color: #fee;
+            border-left: 5px solid #e74c3c;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #e8f8f5;
+            border-left: 5px solid #2ecc71;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: var(--secondary);
+            color: white;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        @media print {
+            body {
+                background-color: transparent;
+                padding: 0;
+                margin: 1.5cm;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            /* Evitar que los bloques se corten por la mitad */
+            .section, .diagram-container, pre, table, tr {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            /* Mantener encabezados con su texto (no dejar títulos sueltos a final de página) */
+            h2, h3 {
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+            /* Colores de código optimizados para impresión */
+            pre {
+                border: 1px solid #999;
+                white-space: pre-wrap;
+                color: #000 !important;
+                background-color: #f4f4f4 !important;
+            }
+            code {
+                color: #000 !important;
+                background-color: #f4f4f4 !important;
+            }
+            @page {
+                margin: 1.5cm;
+                size: A4;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Informe Técnico: Arquitectura y Despliegue en Producción</h1>
+    <div class="date">Proyecto: Sistema Web "D'licias Fast Food" (Broastería)<br>Fecha: Julio 2026</div>
+
+    <p>El presente documento detalla la topología del sistema, el proceso manual de migración inicial, la automatización del flujo de integración continua (CI/CD) y la consolidación de los contenedores Docker en el servidor Azure.</p>
+
+    <!-- ARQUITECTURA DEL SISTEMA -->
+    <div class="section">
+        <h2>1. Arquitectura General del Sistema</h2>
+        <p>El sistema sigue un modelo de cliente-servidor desacoplado, donde el Frontend (Angular) se aloja en Vercel y el Backend (Spring Boot + MySQL) reside en una Máquina Virtual de Azure, protegido por un proxy inverso.</p>
+        
+        <div class="diagram-container">
+            <div class="mermaid">
+                graph LR;
+                %% Nodos
+                Client([Cliente / Navegador Web])
+                Vercel[Frontend Angular<br>Vercel]
+                
+                subgraph AzureVM [Servidor Azure Ubuntu]
+                    Caddy[Proxy Inverso<br>Caddy SSL]
+                    Backend[Backend Spring Boot<br>Puerto 8080]
+                    DB[(MySQL 8.0<br>Volumen db_data)]
+                end
+                
+                subgraph APIs [APIs Externas]
+                    Groq[Groq AI / Llama 3]
+                    Niubiz[Niubiz Pagos]
+                    Nubefact[Nubefact CPE]
+                    Decolecta[Decolecta DNI/RUC]
+                end
+                
+                %% Conexiones
+                Client -->|HTTP/HTTPS| Vercel
+                Client -->|HTTPS Puerto 443| Caddy
+                Caddy -->|HTTP Puerto 8080| Backend
+                Backend <-->|Puerto 3306| DB
+                
+                Backend -->|REST HTTPS| Groq
+                Backend -->|REST HTTPS| Niubiz
+                Backend -->|REST HTTPS| Nubefact
+                Backend -->|REST HTTPS| Decolecta
+                
+                %% Estilos
+                style AzureVM fill:#e8f4f8,stroke:#3498db,stroke-width:2px;
+                style APIs fill:#fcf3cf,stroke:#f1c40f,stroke-width:2px;
+            </div>
+            <p><em>Figura 1: Topología de red y comunicación entre contenedores y APIs externas.</em></p>
+        </div>
+        
+        <h3>Justificación del Uso de Docker</h3>
+        <p>Al empaquetar el servidor en contenedores, se evita el problema de compatibilidad de entornos. El <strong>Proxy Caddy</strong> auto-renueva el SSL para encriptar los datos. El <strong>Backend</strong> procesa toda la lógica aislando el sistema de archivos, y el <strong>Contenedor MySQL</strong> se comunica únicamente por la red virtual de Docker interna, impidiendo hackeos externos al puerto 3306.</p>
+    </div>
+
+    <!-- MIGRACIÓN AL SERVIDOR -->
+    <div class="section">
+        <h2>2. Proceso de Migración Inicial (Primer Despliegue a Azure)</h2>
+        <p>Antes de automatizar, se realizó la migración fundacional del código y la base de datos hacia el servidor virgen de Azure mediante protocolos de transferencia segura (SCP/SSH).</p>
+        
+        <h3>Paso 2.1: Empaquetado y Transferencia de Archivos</h3>
+        <p>Se comprimió el código local y se transfirió utilizando la llave criptográfica asimétrica (<code>.pem</code>):</p>
+        <pre><code># 1. Comprimir el backend localmente
+tar -czf backend.tar.gz broasteriabackend-main/
+
+# 2. Transferir los archivos críticos al servidor Azure mediante SCP
+scp -i produccion_key.pem backend.tar.gz azureuser@172.184.131.149:~/
+scp -i produccion_key.pem docker-compose.yml azureuser@172.184.131.149:~/
+scp -i produccion_key.pem broasteria.sql azureuser@172.184.131.149:~/</code></pre>
+
+        <h3>Paso 2.2: Desempaquetado y Primera Ejecución</h3>
+        <p>Dentro del servidor, se descomprimió el código y se ejecutó Docker Compose para construir la imagen e inicializar la base de datos:</p>
+        <pre><code># 3. Conectar al servidor mediante SSH
+ssh -i produccion_key.pem azureuser@172.184.131.149
+
+# 4. Descomprimir el código fuente
+tar -xzf backend.tar.gz
+mv broasteriabackend-main broasteriabackend
+
+# 5. Crear contenedor oculto para variables de entorno
+nano ~/broasteriabackend/.env
+
+# 6. Construir e inicializar los 3 contenedores (Caddy, Backend, DB)
+sudo docker compose up -d --build</code></pre>
+    </div>
+
+    <!-- ARQUITECTURA CI/CD -->
+    <div class="section">
+        <h2>3. Arquitectura de Despliegue Continuo (CI/CD)</h2>
+        <p>Para agilizar el desarrollo, se configuró <strong>GitHub Actions</strong>. Ahora, cada vez que un desarrollador aprueba un cambio local y lo sube al repositorio en la rama <code>main</code>, GitHub se encarga de todo el proceso de migración de forma invisible y automática.</p>
+        
+        <div class="diagram-container">
+            <div class="mermaid">
+                sequenceDiagram
+                    autonumber
+                    actor Dev as Desarrollador
+                    participant Git as GitHub (Rama main)
+                    participant Action as GitHub Actions
+                    participant Azure as Servidor Azure (VM)
+                    participant Docker as Docker Compose
+
+                    Dev->>Git: git push origin main
+                    Git->>Action: Dispara evento "deploy-backend.yml"
+                    Action->>Action: Extrae código fuente nuevo
+                    Action->>Action: Lee Secretos (SSH_KEY, HOST, USER)
+                    Action->>Azure: Conexión SSH segura
+                    Action->>Azure: Transfiere código comprimido (.tar.gz)
+                    Azure->>Docker: Reconstruye imagen (docker compose build)
+                    Docker->>Azure: Contenedor actualizado corriendo
+                    Azure-->>Action: Reporte de Éxito
+                    Action-->>Dev: Check Verde (Despliegue finalizado)
+            </div>
+            <p><em>Figura 2: Flujo automatizado de despliegue continuo a producción.</em></p>
+        </div>
+    </div>
+
+    <!-- VARIABLES DE ENTORNO -->
+    <div class="section">
+        <h2>4. Gestión de Secretos y Variables de Entorno</h2>
+        <p>El archivo <code>.env</code> inyectado en el servidor contiene únicamente las 4 variables críticas para el funcionamiento.</p>
+        
+        <h3>4.1. Cómo conectarse al servidor y editar el archivo .env</h3>
+        <p>Para modificar las credenciales del sistema en cualquier momento, el administrador debe conectarse de forma segura al servidor Azure y utilizar un editor de texto en consola (Nano).</p>
+        
+        <div class="diagram-container">
+            <div class="mermaid">
+                sequenceDiagram
+                    actor Admin
+                    participant Terminal as Consola Local (Windows)
+                    participant Azure as Servidor Azure
+                    participant Nano as Editor Nano (.env)
+                    participant Docker as Contenedor Java
+
+                    Admin->>Terminal: Abre CMD / PowerShell
+                    Terminal->>Azure: ssh -i produccion_key.pem azureuser@172.184.131.149
+                    Azure-->>Terminal: Autenticado
+                    Terminal->>Azure: nano ~/broasteriabackend/.env
+                    Azure->>Nano: Abre editor de consola
+                    Admin->>Nano: Cambia variable y guarda (Ctrl+O, Ctrl+X)
+                    Terminal->>Azure: sudo docker compose restart backend
+                    Azure->>Docker: Reinicia sistema
+                    Docker-->>Admin: Nuevas variables aplicadas
+            </div>
+            <p><em>Figura 3: Flujo de conexión y edición de variables en producción.</em></p>
+        </div>
+
+        <p><strong>Comandos Exactos a Ejecutar:</strong></p>
+        <pre><code># 1. Iniciar sesión en el servidor Azure (la llave .pem debe estar en la carpeta actual)
+ssh -i produccion_key.pem azureuser@172.184.131.149
+
+# 2. Abrir el archivo de variables oculto
+nano ~/broasteriabackend/.env
+
+# 3. Guardar y salir del editor Nano:
+#    a. Presionar: Ctrl + O (Guarda)
+#    b. Presionar: Enter (Confirma el nombre del archivo)
+#    c. Presionar: Ctrl + X (Sale del editor)
+
+# 4. Reiniciar el contenedor Backend para que absorba los cambios
+cd ~/broasteriabackend
+sudo docker compose restart backend
+
+# 5. Salir del servidor Azure
+exit</code></pre>
+
+        <h3>4.2. Variables Críticas Actuales</h3>
+        <p>A continuación, las variables configuradas en el entorno:</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Variable de Entorno</th>
+                    <th>Valor en Producción / Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>SQL_INIT_MODE</code></td>
+                    <td><strong>never</strong> (Evita que el menú se duplique al reiniciar el contenedor en producción)</td>
+                </tr>
+                <tr>
+                    <td><code>GEMINI_API_KEY</code></td>
+                    <td>Llave privada de Groq (Llama-3.1-8b-instant) para procesar las respuestas del chatbot.</td>
+                </tr>
+                <tr>
+                    <td><code>SPRING_MAIL_USERNAME</code></td>
+                    <td>Correo origen de D'licias Fast Food (Usado para envío de notificaciones y recuperación)</td>
+                </tr>
+                <tr>
+                    <td><code>SPRING_MAIL_PASSWORD</code></td>
+                    <td>Contraseña de aplicación de Gmail para permitir el envío automatizado de correos.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- RESOLUCIÓN DE INCIDENCIAS -->
+    <div class="section">
+        <h2>5. Resolución de Incidencias Críticas (IA y BD)</h2>
+        <p>Durante la estabilización, PolloBot experimentó rechazos de cuota (<em>Error 413 y 429</em>). Se identificó que <code>spring.sql.init.mode=always</code> forzaba la inyección de 20 productos de prueba tras cada compilación del contenedor.</p>
+        
+        <p><strong>Impacto:</strong> 880 productos clonados. El prompt enviado a la IA superó los 12,628 tokens de texto.</p>
+        
+        <p><strong>Comandos de Solución (Limpieza SQL):</strong></p>
+        <pre><code># Acceso a la base de datos dentro del contenedor en producción
+sudo docker exec broasteria_db mysql -uroot -proot defaultdb -e \
+"DELETE p1 FROM producto p1 INNER JOIN producto p2 
+ WHERE p1.ID_Producto > p2.ID_Producto AND p1.Nombre = p2.Nombre;"</code></pre>
+        <p>Para complementar, se parametrizó la API de IA imponiendo <code>requestBody.put("max_tokens", 300);</code> y se suprimió la directiva de inicialización automática en producción (<code>SQL_INIT_MODE=never</code>).</p>
+    </div>
+
+</body>
+</html>
