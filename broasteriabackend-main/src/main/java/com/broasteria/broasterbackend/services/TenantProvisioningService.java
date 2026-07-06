@@ -78,11 +78,11 @@ public class TenantProvisioningService {
         // 3. SOLO inyectar las tablas iniciales si la base de datos se acaba de crear por primera vez
         // Si el servidor se reinició, la base de datos ya existía, así que NO tocamos los datos del cliente.
         if (isNewDatabase) {
-            Resource resource = resourceLoader.getResource("classpath:db-init.sql");
+            Resource resource = resourceLoader.getResource("classpath:db-init-tenant.sql");
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator(resource);
             populator.setContinueOnError(true);
             DatabasePopulatorUtils.execute(populator, dataSource);
-            System.out.println(">>> TABLAS Y MENÚ BASE INYECTADOS PARA " + tenantId + " <<<");
+            System.out.println(">>> TABLAS Y ESTRUCTURA BASE INYECTADA PARA " + tenantId + " <<<");
         } else {
             System.out.println(">>> LA BD DE " + tenantId + " YA EXISTÍA. RECUPERANDO CONEXIÓN SIN TOCAR SUS DATOS <<<");
         }
