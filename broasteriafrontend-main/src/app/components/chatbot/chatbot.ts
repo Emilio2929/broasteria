@@ -52,10 +52,22 @@ export class ChatbotComponent {
         idCliente = clienteObj.id; 
     }
 
-    // ENVIAMOS EL MENSAJE + EL ID DEL CLIENTE
+    // MAPEAR EL HISTORIAL PARA GROQ (Solo enviamos los últimos 6 mensajes para dar contexto sin saturar)
+    // Excluimos el último porque es el 'textoEnviado' actual.
+    // También excluimos el saludo inicial por defecto si queremos, pero mejor enviamos todo.
+    const historial = this.mensajes
+        .slice(0, -1) // Quitamos el mensaje actual
+        .slice(-6) // Tomamos máximo los 6 anteriores
+        .map(msg => ({
+            role: msg.emisor === 'bot' ? 'assistant' : 'user',
+            content: msg.texto
+        }));
+
+    // ENVIAMOS EL MENSAJE + EL ID DEL CLIENTE + EL HISTORIAL
     const payload = { 
         mensaje: textoEnviado,
-        idCliente: idCliente  
+        idCliente: idCliente,
+        historial: historial
     };
     
     this.http.post<any>(environment.apiUrl + '/chat/enviar', payload).subscribe({
